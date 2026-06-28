@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>নৈবেদ্য</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- ═══ PWA ═══ -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f4a535">
+<meta name="mobile-web-app-capable" content="yes">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="নৈবেদ্য">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<!-- Favicons -->
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+<!-- MS Tiles -->
+<meta name="msapplication-TileImage" content="icons/icon-144x144.png">
+<meta name="msapplication-TileColor" content="#f4a535">
+<!-- Open Graph / share preview -->
+<meta property="og:title" content="নৈবেদ্য — বাংলা পূজা অ্যাপ">
+<meta property="og:description" content="মন্ত্র, জপ কাউন্টার, পঞ্চাঙ্গ, স্তোত্র ও আরও অনেক কিছু">
+<meta property="og:image" content="icons/icon-512x512.png">
+<meta property="og:type" content="website">
+<style>
+:root{--bg:#121212;--surface:#1e1e1e;--card:#252525;--border:#333;--text:#f0e6d3;--sub:#b0a090;--accent:#f4a535;--accent2:#e07b39;--shine:#ffd580;--shadow:0 4px 20px rgba(0,0,0,.5);--radius:16px;--fh:'Noto Serif Bengali',serif;--fb:'Noto Sans Bengali',sans-serif}
+[data-theme=light]{--bg:#fdf6ec;--surface:#fff8f0;--card:#fff;--border:#e8d8c0;--text:#2a1a0a;--sub:#7a5c3a;--accent:#c8720a;--accent2:#a85a05;--shine:#e8920a;--shadow:0 4px 20px rgba(180,120,40,.15)}
+[data-theme=oled]{--bg:#000;--surface:#080808;--card:#0f0f0f;--border:#1a1a1a;--text:#fff;--sub:#aaa;--accent:#ffb347;--accent2:#ff8c00;--shine:#ffd700;--shadow:0 4px 20px rgba(0,0,0,.9)}
+[data-theme=hc]{--bg:#000;--surface:#000;--card:#111;--border:#fff;--text:#fff;--sub:#ff0;--accent:#ff0;--accent2:#ff0;--shine:#ff0;--shadow:0 0 0 2px #fff}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;display:flex;flex-direction:column;align-items:center;transition:background .3s,color .3s}
+header{width:100%;max-width:500px;padding:14px 14px 0;position:sticky;top:0;z-index:100;background:var(--bg);transition:background .3s}
+.hdr{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px 9px;box-shadow:var(--shadow);text-align:center}
+.app-title{font-family:var(--fh);font-size:1.4rem;font-weight:700;color:var(--accent)}
+.app-sub{font-size:.63rem;color:var(--sub);letter-spacing:.08em}
+.live-clock{font-family:var(--fh);font-size:.95rem;color:var(--shine);margin-top:3px}
+.ausp{font-size:.6rem;color:#4caf50;background:rgba(76,175,80,.12);border:1px solid rgba(76,175,80,.3);border-radius:20px;padding:2px 8px;display:none;margin-top:2px}
+.theme-bar{display:flex;gap:5px;justify-content:center;margin-top:7px;flex-wrap:wrap}
+/* BUG FIX: theme buttons now use data-theme attribute for reliable active tracking */
+.th-btn{background:var(--card);border:1.5px solid var(--border);color:var(--text);font-family:var(--fb);font-size:.62rem;padding:3px 8px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.th-btn.active,.th-btn:hover{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
+main{width:100%;max-width:500px;padding:11px 14px;flex:1;display:flex;flex-direction:column;gap:11px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:background .3s,border .3s}
+.ch{background:linear-gradient(135deg,var(--accent),var(--accent2));padding:9px 14px;display:flex;align-items:center;gap:7px}
+.ch .ico{font-size:1.15rem}
+.ch h2{font-family:var(--fh);font-size:.9rem;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.cb{padding:11px 13px}
+/* Deity grid — 5 columns, 8 rows for 40 deities, auto-expanding */
+.dgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:9px}
+.dbtn{background:var(--surface);border:1.5px solid var(--border);border-radius:9px;padding:7px 3px;cursor:pointer;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.dbtn:hover,.dbtn.active{border-color:var(--accent);background:var(--accent);transform:translateY(-2px)}
+.dbtn.active .dname,.dbtn:hover .dname{color:#000}
+.dico{font-size:1.3rem}.dname{font-family:var(--fh);font-size:.58rem;font-weight:600;color:var(--text);transition:color .2s;line-height:1.2}
+/* Mantra */
+#mbox{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px;text-align:center;min-height:65px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+#mtxt{font-family:var(--fh);font-size:.95rem;line-height:1.6;color:var(--accent);font-weight:600}
+#mmean{font-size:.7rem;color:var(--sub);line-height:1.4;font-style:italic}
+.mnav{display:flex;gap:6px;margin-top:7px;justify-content:center;align-items:center}
+.nbtn{background:var(--accent);border:none;color:#000;width:33px;height:33px;border-radius:50%;cursor:pointer;font-weight:700;font-size:.9rem;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.nbtn:hover{background:var(--shine);transform:scale(1.1)}
+#mcnt{font-size:.67rem;color:var(--sub);min-width:38px;text-align:center}
+.cbtn{background:var(--surface);border:1px solid var(--border);color:var(--sub);border-radius:7px;padding:4px 9px;font-size:.63rem;cursor:pointer;transition:all .2s}
+.cbtn:hover{border-color:var(--accent);color:var(--accent)}
+/* Deity info tabs */
+.itabs{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+/* BUG FIX: itab active now controlled via JS using data-tab, not brittle onclick string parsing */
+.itab{background:var(--surface);border:1.5px solid var(--border);color:var(--sub);font-family:var(--fb);font-size:.63rem;padding:4px 9px;border-radius:20px;cursor:pointer;transition:all .2s}
+.itab.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
+.ibox{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 12px;font-size:.78rem;line-height:1.75;color:var(--text)}
+.ibox .flower-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.flower-chip{display:inline-flex;align-items:center;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:3px 9px;font-size:.68rem}
+.flower-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.naib-row{display:flex;flex-direction:column;gap:5px;margin-top:5px}
+.naib-item{display:flex;align-items:flex-start;gap:7px;padding:6px 8px;background:var(--card);border:1px solid var(--border);border-radius:8px;font-size:.72rem}
+.naib-ico{font-size:1rem;flex-shrink:0}
+/* Sankalpa */
+.sk-area{display:flex;flex-direction:column;gap:7px}
+.sk-saved{font-family:var(--fh);font-size:.8rem;color:var(--accent);background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:8px 11px;min-height:36px;line-height:1.5}
+.sk-inp{background:var(--surface);border:1.5px solid var(--border);border-radius:9px;padding:8px 11px;font-family:var(--fb);font-size:.8rem;color:var(--text);width:100%;resize:none;outline:none;transition:border .2s}
+.sk-inp:focus{border-color:var(--accent)}
+.sk-save{background:var(--accent);border:none;color:#000;font-family:var(--fb);font-size:.76rem;font-weight:600;padding:7px;border-radius:8px;cursor:pointer;width:100%}
+/* Steps */
+.pbar{height:5px;background:var(--surface);border-radius:3px;margin-bottom:9px;overflow:hidden;border:1px solid var(--border)}
+.pfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--shine));border-radius:3px;transition:width .4s}
+.slist{display:flex;flex-direction:column;gap:6px}
+.sitem{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:all .2s}
+.sitem.done{border-color:var(--accent);opacity:.6}
+.sitem.done .stxt{text-decoration:line-through;color:var(--sub)}
+.snum{background:var(--accent);color:#000;border-radius:50%;width:21px;height:21px;min-width:21px;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sitem.done .snum{background:var(--sub)}
+.stxt{font-size:.78rem;line-height:1.5;color:var(--text)}
+.rbtn{margin-top:7px;width:100%;background:transparent;border:1.5px solid var(--border);color:var(--sub);border-radius:8px;padding:6px;font-family:var(--fb);font-size:.73rem;cursor:pointer;transition:all .2s}
+.rbtn:hover{border-color:var(--accent);color:var(--accent)}
+/* Japa */
+.jarea{display:flex;flex-direction:column;align-items:center;gap:7px}
+.diya{font-size:2.8rem;cursor:pointer;user-select:none;animation:glow 2s ease-in-out infinite}
+.diya:active{transform:scale(.88)}
+#jcnt{font-family:var(--fh);font-size:2.5rem;font-weight:700;color:var(--accent);line-height:1}
+.jlbl{font-size:.68rem;color:var(--sub);letter-spacing:.07em}
+.jbar{width:100%;height:5px;background:var(--surface);border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+.jfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--shine));border-radius:3px;transition:width .3s}
+.cbtns{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.xbtn{background:var(--surface);border:1.5px solid var(--border);color:var(--text);font-family:var(--fb);font-size:.71rem;padding:5px 11px;border-radius:8px;cursor:pointer;transition:all .2s}
+.xbtn:hover{border-color:var(--accent);color:var(--accent)}
+.jlog{font-size:.65rem;color:var(--sub);text-align:center;min-height:15px}
+/* Pushpanjali */
+.parea{text-align:center}
+.fshower{font-size:1.9rem;min-height:40px;letter-spacing:3px;margin-bottom:7px}
+.pbtn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#000;font-family:var(--fh);font-size:.85rem;font-weight:700;padding:9px 26px;border-radius:25px;cursor:pointer;transition:all .2s}
+.pbtn:hover{transform:scale(1.04)}
+.pmsg{font-family:var(--fh);font-size:.8rem;color:var(--accent);margin-top:7px;min-height:20px}
+/* Stotra */
+.stabs{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap}
+.stab{background:var(--surface);border:1.5px solid var(--border);color:var(--sub);font-family:var(--fb);font-size:.63rem;padding:4px 9px;border-radius:20px;cursor:pointer;transition:all .2s}
+.stab.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
+.stxt-area{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px;font-family:var(--fh);font-size:.8rem;line-height:2;color:var(--text);max-height:200px;overflow-y:auto;white-space:pre-line}
+/* Panchang */
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pitem{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:8px 10px;text-align:center}
+.plbl{font-size:.6rem;color:var(--sub);letter-spacing:.06em;margin-bottom:2px}
+.pval{font-family:var(--fh);font-size:.82rem;font-weight:600;color:var(--accent)}
+/* Festivals */
+.flist{display:flex;flex-direction:column;gap:6px}
+.fitem{display:flex;gap:9px;align-items:center;padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:9px}
+.fdate{font-family:var(--fh);font-size:.7rem;color:var(--accent);min-width:68px;font-weight:600}
+.fname{font-size:.76rem;color:var(--text)}
+/* Reminder */
+.rarea{display:flex;flex-direction:column;gap:7px}
+.rrow{display:flex;gap:7px;align-items:center}
+.tinp{background:var(--surface);border:1.5px solid var(--border);border-radius:9px;padding:6px 10px;font-family:var(--fb);font-size:.8rem;color:var(--text);flex:1;outline:none;transition:border .2s}
+.tinp:focus{border-color:var(--accent)}
+.sbtn{background:var(--accent);border:none;color:#000;font-family:var(--fb);font-size:.75rem;font-weight:600;padding:6px 12px;border-radius:9px;cursor:pointer;white-space:nowrap}
+.rstat{font-size:.7rem;color:var(--sub);min-height:16px;text-align:center}
+/* Shloka */
+.shloka-box{background:linear-gradient(135deg,rgba(244,165,53,.08),rgba(224,123,57,.05));border:1px solid var(--border);border-radius:10px;padding:11px;text-align:center;position:relative}
+.shloka-txt{font-family:var(--fh);font-size:.88rem;color:var(--accent);line-height:1.7;font-weight:600}
+.shloka-src{font-size:.63rem;color:var(--sub);margin-top:3px}
+.shloka-cp{position:absolute;top:7px;right:7px;background:transparent;border:1px solid var(--border);border-radius:6px;padding:2px 6px;font-size:.62rem;color:var(--sub);cursor:pointer}
+.shloka-cp:hover{border-color:var(--accent);color:var(--accent)}
+/* Footer */
+footer{width:100%;max-width:500px;text-align:center;padding:11px 14px 18px;font-size:.65rem;color:var(--sub);line-height:1.8;border-top:1px solid var(--border);margin-top:4px}
+footer strong{color:var(--accent);font-weight:600}
+.toast{position:fixed;bottom:65px;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;padding:7px 16px;border-radius:20px;font-size:.75rem;font-weight:600;z-index:999;pointer-events:none;animation:fadein .3s ease}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 6px var(--accent))}50%{filter:drop-shadow(0 0 14px var(--shine))}}
+/* BUG FIX: floatUp animation — was applied to container but reset too fast, conflicting with animation duration */
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}80%{opacity:.6;transform:translateY(-45px) scale(1.35)}100%{opacity:0;transform:translateY(-55px) scale(1.4)}}
+@keyframes fadein{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes mfade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+#mbox{animation:mfade .3s ease}
+</style>
+</head>
+<body>
+<header>
+<div class="hdr">
+  <div class="app-title">🪔 নৈবেদ্য</div>
+  <div class="app-sub">NAIBEDYA · বাংলা পূজা অ্যাপ</div>
+  <div class="live-clock" id="liveClock"></div>
+  <div class="ausp" id="auspTag"></div>
+  <div class="theme-bar">
+    <!-- BUG FIX: data-theme attributes added so setTheme() can find buttons reliably -->
+    <button class="th-btn" data-theme="light" onclick="setTheme('light')">☀️ আলো</button>
+    <button class="th-btn active" data-theme="dark" onclick="setTheme('dark')">🌙 অন্ধকার</button>
+    <button class="th-btn" data-theme="oled" onclick="setTheme('oled')">⬛ OLED</button>
+    <button class="th-btn" data-theme="hc" onclick="setTheme('hc')">♿ HC</button>
+  </div>
+</div>
+</header>
+<main>
+
+<!-- Shloka of Day -->
+<div class="card">
+  <div class="ch"><span class="ico">💡</span><h2>আজকের শ্লোক</h2></div>
+  <div class="cb">
+    <div class="shloka-box">
+      <button class="shloka-cp" id="slokaCp">📋</button>
+      <div class="shloka-txt" id="slokaTxt"></div>
+      <div class="shloka-src" id="slokaSrc"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Deity + Mantra + Info -->
+<div class="card">
+  <div class="ch"><span class="ico">🙏</span><h2>দেবী / দেবতা, মন্ত্র ও বিস্তারিত</h2></div>
+  <div class="cb">
+    <div class="dgrid" id="deityGrid"></div>
+    <div id="mbox"><div id="mtxt"></div><div id="mmean"></div></div>
+    <div class="mnav">
+      <button class="nbtn" onclick="prevM()">◀</button>
+      <span id="mcnt"></span>
+      <button class="nbtn" onclick="nextM()">▶</button>
+      <button class="cbtn" onclick="shareM()">📋 শেয়ার</button>
+    </div>
+    <!-- BUG FIX: data-tab attributes used instead of brittle onclick string matching -->
+    <div class="itabs" style="margin-top:10px">
+      <button class="itab active" data-tab="flower" onclick="showInfo('flower')">🌸 ফুল ও রং</button>
+      <button class="itab" data-tab="naib" onclick="showInfo('naib')">🍛 নৈবেদ্য</button>
+    </div>
+    <div class="ibox" id="infoBox"></div>
+  </div>
+</div>
+
+<!-- Sankalpa -->
+<div class="card">
+  <div class="ch"><span class="ico">🎯</span><h2>দৈনিক সংকল্প</h2></div>
+  <div class="cb">
+    <div class="sk-area">
+      <div class="sk-saved" id="skSaved">আজকের সংকল্প এখানে দেখা যাবে…</div>
+      <textarea class="sk-inp" id="skTxt" rows="2" placeholder="আপনার সংকল্প লিখুন…"></textarea>
+      <button class="sk-save" onclick="saveSk()">✅ সংকল্প সংরক্ষণ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- Puja Steps -->
+<div class="card">
+  <div class="ch"><span class="ico">📿</span><h2>পূজার ধাপসমূহ</h2></div>
+  <div class="cb">
+    <div class="pbar"><div class="pfill" id="pf" style="width:0%"></div></div>
+    <div class="slist" id="stepsList"></div>
+    <button class="rbtn" onclick="resetSteps()">↺ পুনরায় শুরু করুন</button>
+  </div>
+</div>
+
+<!-- Japa Counter -->
+<div class="card">
+  <div class="ch"><span class="ico">🔔</span><h2>জপ কাউন্টার</h2></div>
+  <div class="cb">
+    <div class="jarea">
+      <div class="diya" onclick="japaClick()">🪔</div>
+      <div id="jcnt">0</div>
+      <div class="jlbl">জপ সংখ্যা / লক্ষ্য: <span id="tlbl">108</span></div>
+      <div class="jbar"><div class="jfill" id="jf" style="width:0%"></div></div>
+      <div class="cbtns">
+        <button class="xbtn" onclick="japaReset()">↺ রিসেট</button>
+        <button class="xbtn" onclick="cycleTarget()">🎯 লক্ষ্য</button>
+        <button class="xbtn" onclick="ringBell()">🔔 ঘণ্টা</button>
+      </div>
+      <div class="jlog" id="jlog"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Pushpanjali -->
+<div class="card">
+  <div class="ch"><span class="ico">🌸</span><h2>পুষ্পাঞ্জলি অর্পণ</h2></div>
+  <div class="cb">
+    <div class="parea">
+      <div class="fshower" id="fshower">🌸🌺🌼</div>
+      <button class="pbtn" onclick="offerFlowers()">🙏 পুষ্পাঞ্জলি অর্পণ করুন</button>
+      <div class="pmsg" id="pmsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Stotra / Hanuman Chalisa -->
+<div class="card">
+  <div class="ch"><span class="ico">📖</span><h2>স্তোত্র পাঠ ও হনুমান চালিশা</h2></div>
+  <div class="cb">
+    <div class="stabs" id="stotraTabs"></div>
+    <div class="stxt-area" id="stotraText"></div>
+  </div>
+</div>
+
+<!-- Panchang -->
+<div class="card">
+  <div class="ch"><span class="ico">📅</span><h2>আজকের পঞ্চাঙ্গ</h2></div>
+  <div class="cb"><div class="pgrid" id="pgrid"></div></div>
+</div>
+
+<!-- Festivals -->
+<div class="card">
+  <div class="ch"><span class="ico">🎉</span><h2>আসন্ন উৎসব</h2></div>
+  <div class="cb"><div class="flist" id="festList"></div></div>
+</div>
+
+<!-- Reminder -->
+<div class="card">
+  <div class="ch"><span class="ico">⏰</span><h2>পূজার স্মরণিকা</h2></div>
+  <div class="cb">
+    <div class="rarea">
+      <div class="rrow">
+        <input type="time" class="tinp" id="remTime" value="06:00">
+        <button class="sbtn" onclick="setReminder()">🔔 সেট করুন</button>
+      </div>
+      <div class="rstat" id="rstat">প্রতিদিনের পূজার সময় নির্ধারণ করুন</div>
+    </div>
+  </div>
+</div>
+
+</main>
+<footer>
+  <strong>© Manik Roy <span id="yr"></span></strong> — All Rights Reserved<br>
+  বাংলা পূজা অ্যাপ · <strong>নৈবেদ্য</strong> · শ্রী হরি ওঁ তৎ সৎ
+</footer>
+
+<script>
+// ═══════════════ DATA ═══════════════
+const DEITIES = [
+  {
+    id:'durga', icon:'🦁', name:'দুর্গা',
+    mantras:[
+      {t:'ওঁ দুং দুর্গায়ৈ নমঃ', m:'দেবী দুর্গাকে প্রণাম'},
+      {t:'সর্বমঙ্গলমাঙ্গল্যে শিবে সর্বার্থসাধিকে', m:'সকল মঙ্গলের মঙ্গলময়ী দেবী'},
+      {t:'যা দেবী সর্বভূতেষু শক্তিরূপেণ সংস্থিতা', m:'যিনি সকল প্রাণীতে শক্তিরূপে বিরাজমান'}
+    ],
+    flowers:[
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'গাঁদা ফুল (হলুদ)', hex:'#f9a825'},
+      {name:'পদ্ম (লাল)', hex:'#c62828'},
+      {name:'বেলপাতা (সবুজ)', hex:'#388e3c'},
+      {name:'অপরাজিতা (নীল)', hex:'#1565c0'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'খিচুড়ি — মুগ ডাল ও চাল দিয়ে তৈরি'},
+      {ico:'🍛', txt:'লুচি ও আলুর দম — নবমীতে বিশেষভাবে নিবেদন'},
+      {ico:'🍮', txt:'পায়েস — দুধ, চিনি ও চাল দিয়ে তৈরি মিষ্টান্ন'},
+      {ico:'🍌', txt:'কলা — কাঁচা কলা ও পাকা কলা উভয়ই অর্পিত হয়'},
+      {ico:'🥥', txt:'নারকেল — সমগ্র পূজায় অপরিহার্য'},
+      {ico:'🍭', txt:'মিষ্টি — সন্দেশ, রসগোল্লা, মিষ্টি দই'}
+    ]
+  },
+  {
+    id:'kali', icon:'🔱', name:'কালী',
+    mantras:[
+      {t:'ওঁ ক্রীং কালিকায়ৈ নমঃ', m:'মা কালীকে প্রণাম'},
+      {t:'জয় মা কালী মহাকালী', m:'মহাকালীর জয় হোক'},
+      {t:'ওঁ হ্রীং শ্রীং ক্রীং পরমেশ্বরি স্বাহা', m:'পরমেশ্বরীর উদ্দেশে আহুতি'}
+    ],
+    flowers:[
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'কালো তিল ফুল', hex:'#212121'},
+      {name:'লাল অশোক', hex:'#b71c1c'},
+      {name:'ধুতুরা ফুল (সাদা)', hex:'#e0e0e0'}
+    ],
+    naibedya:[
+      {ico:'🐟', txt:'মাছ — রুই বা কাতলা মাছ নিবেদন করা হয়'},
+      {ico:'🍖', txt:'মাংস — পাঁঠার মাংস বিশেষ নৈবেদ্য'},
+      {ico:'🍚', txt:'ভাত — সাদা ভাত অর্পণ করা হয়'},
+      {ico:'🍷', txt:'মদ্য — তান্ত্রিক পূজায় পঞ্চ তত্ত্ব হিসেবে অর্পিত'},
+      {ico:'🌿', txt:'বেলপাতা — তিনটি পাতা একসাথে অর্পণ'},
+      {ico:'🍬', txt:'মিষ্টি — কালো তিলের নাড়ু'}
+    ]
+  },
+  {
+    id:'lakshmi', icon:'🌸', name:'লক্ষ্মী',
+    mantras:[
+      {t:'ওঁ শ্রীং মহালক্ষ্ম্যৈ নমঃ', m:'মহালক্ষ্মীকে প্রণাম'},
+      {t:'ওঁ হ্রীং শ্রীং লক্ষ্মীভ্যো নমঃ', m:'লক্ষ্মীদেবীর চরণে প্রণাম'},
+      {t:'লক্ষ্মী নারায়ণ পাদুকাম পূজয়ামি', m:'লক্ষ্মী নারায়ণের পাদুকা পূজন'}
+    ],
+    flowers:[
+      {name:'সাদা পদ্ম', hex:'#f8bbd0'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'সাদা রজনীগন্ধা', hex:'#e0e0e0'},
+      {name:'গোলাপি কমল', hex:'#f48fb1'},
+      {name:'হলুদ চাঁপা', hex:'#f9e04b'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'পায়েস — গোপাল ভোগ চাল দিয়ে তৈরি মিষ্টি পায়েস'},
+      {ico:'🍮', txt:'নারকেলের নাড়ু — লক্ষ্মীর অতি প্রিয়'},
+      {ico:'🌾', txt:'ধান — নতুন ধান, লক্ষ্মীর প্রতীক'},
+      {ico:'🍌', txt:'কলা — পাকা কলা নিবেদন'},
+      {ico:'🥛', txt:'দুধ ও মধু — শুদ্ধ গোদুগ্ধ'},
+      {ico:'🍭', txt:'মিষ্টি সন্দেশ — বিশেষভাবে প্রিয়'}
+    ]
+  },
+  {
+    id:'saraswati', icon:'🎵', name:'সরস্বতী',
+    mantras:[
+      {t:'ওঁ ঐং সরস্বত্যৈ নমঃ', m:'দেবী সরস্বতীকে প্রণাম'},
+      {t:'সরস্বতী মহাভাগে বিদ্যে কমললোচনে', m:'বিদ্যার দেবীকে বন্দনা'},
+      {t:'ওঁ সরস্বতী নমস্তুভ্যং বরদে কামরূপিণী', m:'বিদ্যা ও জ্ঞানদায়িনীকে প্রণাম'}
+    ],
+    flowers:[
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'সাদা গোলাপ', hex:'#eeeeee'},
+      {name:'বাসন্তী (হলুদ)', hex:'#f9e04b'},
+      {name:'পলাশ (লাল)', hex:'#e53935'},
+      {name:'সাদা কদম', hex:'#e8e8e8'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'পায়েস — সাদা ও মিষ্টি, সরস্বতীর প্রিয়'},
+      {ico:'🍌', txt:'কলা — পাকা কলা নিবেদন'},
+      {ico:'🥛', txt:'দুধ — শুদ্ধ গোদুগ্ধ'},
+      {ico:'📚', txt:'বই ও বাদ্যযন্ত্র — পূজার আগে রেখে দেওয়া হয়'},
+      {ico:'🍬', txt:'বাতাসা ও মিষ্টি — সাদা রঙের মিষ্টি'},
+      {ico:'🌾', txt:'আতপ চাল — সাদা নিরামিষ নৈবেদ্য'}
+    ]
+  },
+  {
+    id:'ganesha', icon:'🐘', name:'গণেশ',
+    mantras:[
+      {t:'ওঁ গং গণপতয়ে নমঃ', m:'গণপতিকে প্রণাম'},
+      {t:'বক্রতুণ্ড মহাকায় সূর্যকোটি সমপ্রভ', m:'বক্রতুণ্ড মহাদেবের স্তুতি'},
+      {t:'ওঁ শ্রীং গণেশায় নমঃ', m:'শ্রী গণেশকে প্রণাম'}
+    ],
+    flowers:[
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'লাল গোলাপ', hex:'#c62828'},
+      {name:'দূর্বা ঘাস (সবুজ)', hex:'#2e7d32'},
+      {name:'তুলসী পাতা', hex:'#388e3c'}
+    ],
+    naibedya:[
+      {ico:'🍮', txt:'মোদক — গণেশের সবচেয়ে প্রিয়, নারকেল ও গুড় দিয়ে তৈরি'},
+      {ico:'🍌', txt:'কলা — গণেশের অতি প্রিয় ফল'},
+      {ico:'🥥', txt:'নারকেল — ভাঙা নারকেল নিবেদন'},
+      {ico:'🍭', txt:'লাড্ডু — বেসন ও ঘি দিয়ে তৈরি'},
+      {ico:'🌾', txt:'দূর্বা ঘাস — ২১টি দূর্বা একসাথে অর্পণ'},
+      {ico:'🍬', txt:'গুড় — আখের গুড় বিশেষভাবে নিবেদিত'}
+    ]
+  },
+  {
+    id:'shiva', icon:'🌙', name:'শিব',
+    mantras:[
+      {t:'ওঁ নমঃ শিবায়', m:'শিবকে প্রণাম — পঞ্চাক্ষর মন্ত্র'},
+      {t:'ওঁ ত্র্যম্বকং যজামহে সুগন্ধিং পুষ্টিবর্ধনম্', m:'মহামৃত্যুঞ্জয় মন্ত্র'},
+      {t:'শিবায় শিবশঙ্করায় শম্ভবে নমঃ', m:'শিব-শঙ্করকে প্রণাম'}
+    ],
+    flowers:[
+      {name:'ধুতুরা ফুল (সাদা)', hex:'#e0e0e0'},
+      {name:'নীল অপরাজিতা', hex:'#1565c0'},
+      {name:'বেলফুল (সাদা)', hex:'#f5f5f5'},
+      {name:'আকন্দ (সাদা-বেগুনি)', hex:'#9c27b0'},
+      {name:'নীলকণ্ঠ ফুল', hex:'#283593'}
+    ],
+    naibedya:[
+      {ico:'🌿', txt:'বেলপাতা — তিনটি পাতা, শিবের সবচেয়ে প্রিয়'},
+      {ico:'🥛', txt:'দুধ — শিবলিঙ্গে দুধ ঢালা হয় (অভিষেক)'},
+      {ico:'🍯', txt:'মধু — অভিষেকে মধু ব্যবহার'},
+      {ico:'🌾', txt:'ধুতুরা ফল — বিশেষ নৈবেদ্য'},
+      {ico:'🧂', txt:'ভস্ম — বিভূতি অর্পণ করা হয়'},
+      {ico:'🫖', txt:'গঙ্গাজল — পবিত্র জল অভিষেকে'}
+    ]
+  },
+  {
+    id:'hanuman', icon:'🐒', name:'হনুমান',
+    mantras:[
+      {t:'ওঁ হনুমতে নমঃ', m:'হনুমানকে প্রণাম'},
+      {t:'মনোজবং মারুততুল্যবেগং জিতেন্দ্রিয়ং বুদ্ধিমতাং বরিষ্ঠম্', m:'হনুমান স্তুতি — জয় বজরংবলী'},
+      {t:'জয় হনুমান জ্ঞান গুণ সাগর জয় কপীশ তিহুঁ লোক উজাগর', m:'হনুমান চালিশার প্রথম চৌপাই'}
+    ],
+    flowers:[
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'কমলা গাঁদা', hex:'#ff6f00'},
+      {name:'লাল গোলাপ', hex:'#c62828'},
+      {name:'তুলসী পাতা', hex:'#388e3c'}
+    ],
+    naibedya:[
+      {ico:'🍌', txt:'কলা — হনুমানের সবচেয়ে প্রিয় ফল'},
+      {ico:'🧡', txt:'সিঁদুর ও তেল — শরীরে সিঁদুর ও সর্ষের তেল অর্পণ'},
+      {ico:'🍬', txt:'বেসনের লাড্ডু — বিশেষ প্রসাদ'},
+      {ico:'🥥', txt:'নারকেল — ভাঙা নারকেল নিবেদন'},
+      {ico:'🍃', txt:'তুলসী মালা — গলায় পরানো হয়'},
+      {ico:'🌾', txt:'গুড় ও চণা — হনুমান পূজায় বিশেষ'}
+    ]
+  },
+  {
+    id:'vishnu', icon:'🦅', name:'বিষ্ণু',
+    mantras:[
+      {t:'ওঁ নমো ভগবতে বাসুদেবায়', m:'ভগবান বিষ্ণুকে প্রণাম'},
+      {t:'শান্তাকারং ভুজগশয়নং পদ্মনাভং সুরেশম্', m:'বিষ্ণু স্তোত্র — শান্তিময় ভগবান'},
+      {t:'হরে কৃষ্ণ হরে কৃষ্ণ কৃষ্ণ কৃষ্ণ হরে হরে', m:'মহামন্ত্র — কলিযুগের তারক ব্রহ্ম'}
+    ],
+    flowers:[
+      {name:'তুলসী পাতা', hex:'#388e3c'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'নীল পদ্ম', hex:'#1565c0'},
+      {name:'কদম্ব (হলুদ)', hex:'#ffc107'},
+      {name:'পীত চাঁপা', hex:'#f9d94b'}
+    ],
+    naibedya:[
+      {ico:'🌿', txt:'তুলসী পাতা — বিষ্ণুর সবচেয়ে প্রিয়, অপরিহার্য'},
+      {ico:'🍚', txt:'পায়েস ও খিচুড়ি — ভোগের প্রধান নৈবেদ্য'},
+      {ico:'🥛', txt:'পঞ্চামৃত — দুধ, দই, মধু, ঘি ও চিনি'},
+      {ico:'🍌', txt:'কলা ও বিভিন্ন ফল'},
+      {ico:'🍭', txt:'মিষ্টি সন্দেশ ও মিষ্টান্ন'},
+      {ico:'🫖', txt:'গঙ্গাজল — অভিষেকে ব্যবহার'}
+    ]
+  },
+  {
+    id:'krishna', icon:'🦚', name:'কৃষ্ণ',
+    mantras:[
+      {t:'ওঁ নমো ভগবতে বাসুদেবায়', m:'ভগবান কৃষ্ণকে প্রণাম'},
+      {t:'হরে কৃষ্ণ হরে কৃষ্ণ কৃষ্ণ কৃষ্ণ হরে হরে হরে রাম হরে রাম', m:'মহামন্ত্র — সোলো মন্ত্র'},
+      {t:'গোবিন্দ দামোদর মাধবেতি', m:'কৃষ্ণের নাম স্মরণ'}
+    ],
+    flowers:[
+      {name:'তুলসী পাতা', hex:'#388e3c'},
+      {name:'নীল পদ্ম', hex:'#1565c0'},
+      {name:'হলুদ কদম্ব', hex:'#ffc107'},
+      {name:'রাধা চূড়া (হলুদ)', hex:'#ffd600'},
+      {name:'মালতী (সাদা)', hex:'#eeeeee'}
+    ],
+    naibedya:[
+      {ico:'🧈', txt:'মাখন ও মিশ্রি — শিশু কৃষ্ণের সবচেয়ে প্রিয়'},
+      {ico:'🍚', txt:'পঞ্চামৃত ও খিচুড়ি'},
+      {ico:'🍮', txt:'মাখন মিষ্টি ও ক্ষীর'},
+      {ico:'🌿', txt:'তুলসী মালা — অপরিহার্য নৈবেদ্য'},
+      {ico:'🍭', txt:'পেড়া ও লাড্ডু — মথুরার বিশেষ মিষ্টি'},
+      {ico:'🎶', txt:'বাঁশি — বাঁশি রেখে পূজা করা হয়'}
+    ]
+  },
+  {
+    id:'kartikeya', icon:'⚔️', name:'কার্তিক',
+    mantras:[
+      {t:'ওঁ শরবণভবায় নমঃ', m:'কার্তিক দেবকে প্রণাম'},
+      {t:'ওঁ স্কন্দায় নমঃ', m:'স্কন্দ দেবকে প্রণাম'},
+      {t:'ষণ্মুখং শূরপদ্মারিং শক্তিহস্তং সুরারিহম্', m:'কার্তিকের ষড়মুখী স্তুতি'}
+    ],
+    flowers:[
+      {name:'লাল গোলাপ', hex:'#c62828'},
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'কমলা গাঁদা', hex:'#ff6f00'},
+      {name:'হলুদ চাঁপা', hex:'#f9e04b'},
+      {name:'তুলসী পাতা', hex:'#388e3c'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'ভাত ও ডাল — সাধারণ নিরামিষ নৈবেদ্য'},
+      {ico:'🍮', txt:'পায়েস — মিষ্টি দুধের পায়েস'},
+      {ico:'🌾', txt:'ফুল ও দূর্বা — বিশেষভাবে অর্পণ'},
+      {ico:'🥥', txt:'নারকেল ও কলা'},
+      {ico:'🍭', txt:'মিষ্টি সন্দেশ'},
+      {ico:'🗡️', txt:'বেল — বেল ফল বিশেষ নৈবেদ্য'}
+    ]
+  },
+  {
+    id:'rama', icon:'🏹', name:'রাম',
+    mantras:[
+      {t:'ওঁ রামায় নমঃ', m:'ভগবান রামকে প্রণাম'},
+      {t:'শ্রীরামচন্দ্র কৃপালু ভজু মন হরণ ভবভয় দারুণম্', m:'রামচন্দ্রের কৃপা প্রার্থনা'},
+      {t:'রাম রাম রাম রাম রাম রাম রাম রাম', m:'রাম নাম তারক মন্ত্র — অষ্টনাম জপ'}
+    ],
+    flowers:[
+      {name:'তুলসী পাতা', hex:'#388e3c'},
+      {name:'লাল গোলাপ', hex:'#c62828'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'সাদা বেলফুল', hex:'#f5f5f5'},
+      {name:'পদ্ম (গোলাপি)', hex:'#f48fb1'}
+    ],
+    naibedya:[
+      {ico:'🌿', txt:'তুলসী পাতা — রামের পূজায় অপরিহার্য'},
+      {ico:'🍚', txt:'পায়েস ও ভোগ — সীতারাম ভোগ'},
+      {ico:'🍌', txt:'কলা ও মৌসুমী ফল'},
+      {ico:'🥛', txt:'পঞ্চামৃত — দুধ, দই, মধু, ঘি ও চিনি'},
+      {ico:'🍭', txt:'মিষ্টি সন্দেশ ও রসগোল্লা'},
+      {ico:'🫖', txt:'গঙ্গাজল — অভিষেক ও পূজায়'}
+    ]
+  },
+  {
+    id:'radha', icon:'💛', name:'রাধা',
+    mantras:[
+      {t:'ওঁ রাধায়ৈ নমঃ', m:'শ্রীমতী রাধারানীকে প্রণাম'},
+      {t:'রাধে রাধে রাধে শ্যাম মিলাদে রাধে', m:'রাধাকৃষ্ণের মিলনের প্রার্থনা'},
+      {t:'শ্রী রাধে গোবিন্দ রাধে গোবিন্দ রাধে', m:'রাধা-গোবিন্দের যুগল নাম স্মরণ'}
+    ],
+    flowers:[
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'সাদা রজনীগন্ধা', hex:'#e0e0e0'},
+      {name:'গোলাপি গোলাপ', hex:'#f48fb1'},
+      {name:'তুলসী পাতা', hex:'#388e3c'},
+      {name:'কদম্ব ফুল (হলুদ)', hex:'#ffc107'}
+    ],
+    naibedya:[
+      {ico:'🧈', txt:'মাখন ও মিশ্রি — রাধার অতি প্রিয়'},
+      {ico:'🍮', txt:'ক্ষীর ও মিষ্টি পায়েস'},
+      {ico:'🌿', txt:'তুলসী মালা — অপরিহার্য নৈবেদ্য'},
+      {ico:'🍭', txt:'পেড়া ও লাড্ডু — বৃন্দাবনের মিষ্টি'},
+      {ico:'🍌', txt:'কলা ও ফল — মৌসুমী ফল নিবেদন'},
+      {ico:'🎶', txt:'বাঁশি ও ময়ূর পালক — কৃষ্ণপ্রিয় বস্তু'}
+    ]
+  },
+  {
+    id:'jagannath', icon:'🎡', name:'জগন্নাথ',
+    mantras:[
+      {t:'ওঁ জগন্নাথায় নমঃ', m:'জগন্নাথ দেবকে প্রণাম'},
+      {t:'জয় জগন্নাথ জয় বলভদ্র জয় সুভদ্রা', m:'জগন্নাথ ও তাঁর ভাই-বোনের জয়'},
+      {t:'নীলাচলনিবাসায় নিত্যায় পরমাত্মনে', m:'নীলাচলবাসী পরমেশ্বরকে প্রণাম'}
+    ],
+    flowers:[
+      {name:'তুলসী পাতা', hex:'#388e3c'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'কদম্ব (হলুদ)', hex:'#ffc107'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'মহাপ্রসাদ — পুরীর বিখ্যাত ৫৬ ভোগ'},
+      {ico:'🍛', txt:'খিচুড়ি ও ডাল — প্রধান ভোগ'},
+      {ico:'🍮', txt:'পায়েস ও ক্ষীর — মিষ্টান্ন ভোগ'},
+      {ico:'🥥', txt:'নারকেল ও কলা — নিত্য নৈবেদ্য'},
+      {ico:'🌿', txt:'তুলসী পাতা — অপরিহার্য'},
+      {ico:'🍭', txt:'মিষ্টি সন্দেশ ও রসগোল্লা'}
+    ]
+  },
+  {
+    id:'surya', icon:'☀️', name:'সূর্য',
+    mantras:[
+      {t:'ওঁ সূর্যায় নমঃ', m:'সূর্যদেবকে প্রণাম'},
+      {t:'ওঁ ঘৃণি সূর্য আদিত্যঃ', m:'সূর্যের গায়ত্রী মন্ত্র'},
+      {t:'জয় জয় সূর্য ভাস্কর বিভাবসো নমস্তুতে', m:'সূর্য ভাস্করকে বন্দনা'}
+    ],
+    flowers:[
+      {name:'লাল পদ্ম', hex:'#c62828'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'কমলা গাঁদা', hex:'#ff6f00'},
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'সূর্যমুখী (হলুদ)', hex:'#ffd600'}
+    ],
+    naibedya:[
+      {ico:'🥛', txt:'গোদুগ্ধ — সূর্যকে দুধ অর্পণ করা হয়'},
+      {ico:'🍚', txt:'ভাত ও গুড় — বিশেষ নৈবেদ্য'},
+      {ico:'🫖', txt:'জল — অর্ঘ্য প্রদান — সূর্যোদয়ে জল ঢালা'},
+      {ico:'🌾', txt:'লাল চন্দন ও ফুল'},
+      {ico:'🍮', txt:'পায়েস — মিষ্টি পায়েস নিবেদন'},
+      {ico:'🍊', txt:'কমলালেবু ও লাল ফল — সূর্যের রঙের'}
+    ]
+  },
+  {
+    id:'manasa', icon:'🐍', name:'মনসা',
+    mantras:[
+      {t:'ওঁ মনসায়ৈ নমঃ', m:'দেবী মনসাকে প্রণাম'},
+      {t:'জয় মনসা দেবী বিষহারী', m:'বিষহারিণী মনসা দেবীর জয়'},
+      {t:'ওঁ হ্রীং মনসায়ৈ স্বাহা', m:'মনসা দেবীর বীজ মন্ত্র'}
+    ],
+    flowers:[
+      {name:'সাদা ফুল', hex:'#f5f5f5'},
+      {name:'নীল অপরাজিতা', hex:'#1565c0'},
+      {name:'সবুজ পাতা', hex:'#388e3c'},
+      {name:'কলমি ফুল (বেগুনি)', hex:'#7b1fa2'},
+      {name:'জলপদ্ম', hex:'#b2dfdb'}
+    ],
+    naibedya:[
+      {ico:'🐟', txt:'মাছ — মনসা পূজায় মাছ নিবেদন'},
+      {ico:'🍌', txt:'কলা — পাকা কলা বিশেষভাবে অর্পণ'},
+      {ico:'🥛', txt:'দুধ — সর্পদেবীকে দুধ নিবেদন'},
+      {ico:'🌿', txt:'কলাপাতা — পূজার আসন হিসেবে'},
+      {ico:'🍮', txt:'ক্ষীর ও পায়েস — মিষ্টি নৈবেদ্য'},
+      {ico:'🎋', txt:'বেত ও শণের দড়ি — মনসার বিশেষ উপকরণ'}
+    ]
+  },
+  {
+    id:'sitala', icon:'❄️', name:'শীতলা',
+    mantras:[
+      {t:'ওঁ শীতলায়ৈ নমঃ', m:'দেবী শীতলাকে প্রণাম'},
+      {t:'জয় জয় শীতলা মা — শীতল করো তনু মন', m:'শীতলা মাতার বন্দনা'},
+      {t:'ওঁ হ্রীং শ্রীং শীতলায়ৈ স্বাহা', m:'শীতলা দেবীর মন্ত্র'}
+    ],
+    flowers:[
+      {name:'সাদা ফুল', hex:'#f5f5f5'},
+      {name:'নীল ফুল', hex:'#1565c0'},
+      {name:'সাদা জুঁই', hex:'#eeeeee'},
+      {name:'নীল পদ্ম', hex:'#283593'},
+      {name:'সাদা রজনীগন্ধা', hex:'#e0e0e0'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'বাসি ভাত — শীতলা পূজায় ঠান্ডা বাসি খাবার নিবেদন'},
+      {ico:'🥗', txt:'পান্তা ভাত — বিশেষ নৈবেদ্য'},
+      {ico:'🍋', txt:'লেবু ও তেঁতুল — টক জিনিস অর্পণ'},
+      {ico:'🫙', txt:'সরিষার তেল — দেবীর বিশেষ পছন্দ'},
+      {ico:'🌿', txt:'নিম পাতা — শীতলার প্রতীক'},
+      {ico:'🧊', txt:'ঠান্ডা জল — অভিষেকে শীতল জল'}
+    ]
+  },
+  {
+    id:'annapurna', icon:'🍲', name:'অন্নপূর্ণা',
+    mantras:[
+      {t:'ওঁ অন্নপূর্ণায়ৈ নমঃ', m:'দেবী অন্নপূর্ণাকে প্রণাম'},
+      {t:'অন্নপূর্ণে সদাপূর্ণে শঙ্করপ্রাণবল্লভে', m:'অন্নপূর্ণা স্তোত্র — শিবের প্রিয়া'},
+      {t:'নিত্যানন্দকরে নিত্যশুভদে নিত্যসুন্দরি', m:'নিত্যানন্দদায়িনী দেবীকে বন্দনা'}
+    ],
+    flowers:[
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'তুলসী পাতা', hex:'#388e3c'},
+      {name:'গোলাপি কমল', hex:'#f48fb1'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'ভাত ও খিচুড়ি — অন্নদেবীর প্রধান নৈবেদ্য'},
+      {ico:'🍛', txt:'পাঁচ রকম রান্না — পঞ্চব্যঞ্জন ভোগ'},
+      {ico:'🍮', txt:'পায়েস — মিষ্টি পায়েস অর্পণ'},
+      {ico:'🍞', txt:'লুচি ও পুরি — বিশেষ নৈবেদ্য'},
+      {ico:'🥥', txt:'নারকেল ও মিষ্টি ফল'},
+      {ico:'🍭', txt:'মিষ্টি — নানা রকম মিষ্টান্ন'}
+    ]
+  },
+  {
+    id:'chandi', icon:'🌟', name:'চণ্ডী',
+    mantras:[
+      {t:'ওঁ চণ্ডিকায়ৈ নমঃ', m:'দেবী চণ্ডীকে প্রণাম'},
+      {t:'ওঁ ঐং হ্রীং ক্লীং চামুণ্ডায়ৈ বিচ্চে', m:'চণ্ডী বীজ মন্ত্র — নবার্ণ মন্ত্র'},
+      {t:'জয়ন্তী মঙ্গলা কালী ভদ্রকালী কপালিনী', m:'দুর্গাসপ্তশতীর মঙ্গলাচরণ'}
+    ],
+    flowers:[
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'লাল অশোক', hex:'#b71c1c'},
+      {name:'লাল গোলাপ', hex:'#c62828'},
+      {name:'কৃষ্ণ তিল ফুল', hex:'#212121'},
+      {name:'বেলপাতা (সবুজ)', hex:'#388e3c'}
+    ],
+    naibedya:[
+      {ico:'🍖', txt:'পাঁঠার মাংস — চণ্ডী পূজায় বিশেষ নৈবেদ্য'},
+      {ico:'🍚', txt:'খিচুড়ি ও ভোগ — সপ্তমী পূজায়'},
+      {ico:'🍮', txt:'পায়েস ও মিষ্টান্ন'},
+      {ico:'🌿', txt:'বেলপাতা — তিনটি পাতা একসাথে'},
+      {ico:'🍷', txt:'মদ্য — তান্ত্রিক পূজায় পঞ্চতত্ত্ব'},
+      {ico:'🥥', txt:'নারকেল ও কলা — নিত্য নৈবেদ্য'}
+    ]
+  },
+  {
+    id:'brahma', icon:'🪷', name:'ব্রহ্মা',
+    mantras:[
+      {t:'ওঁ ব্রহ্মণে নমঃ', m:'সৃষ্টিকর্তা ব্রহ্মাকে প্রণাম'},
+      {t:'ওঁ বেদাত্মনে নমঃ — চতুর্মুখ ব্রহ্মার বন্দনা', m:'চার বেদের অধীশ্বরকে প্রণাম'},
+      {t:'ওঁ হিরণ্যগর্ভায় নমঃ', m:'সোনালি গর্ভের সৃষ্টিকর্তাকে প্রণাম'}
+    ],
+    flowers:[
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'সাদা কদম', hex:'#e8e8e8'},
+      {name:'তুলসী পাতা', hex:'#388e3c'},
+      {name:'বাসন্তী চাঁপা', hex:'#fff176'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'পায়েস — সাত্ত্বিক মিষ্টান্ন'},
+      {ico:'🥛', txt:'পঞ্চামৃত — শুদ্ধ পবিত্র নৈবেদ্য'},
+      {ico:'🍭', txt:'মিষ্টি সন্দেশ ও মিষ্টান্ন'},
+      {ico:'🌾', txt:'চাল ও তিল — যজ্ঞে ব্যবহৃত হয়'},
+      {ico:'🫖', txt:'গঙ্গাজল ও শুদ্ধ জল'},
+      {ico:'📿', txt:'রুদ্রাক্ষ ও চন্দন — পূজার উপকরণ'}
+    ]
+  },
+  {
+    id:'indra', icon:'⚡', name:'ইন্দ্র',
+    mantras:[
+      {t:'ওঁ ইন্দ্রায় নমঃ', m:'দেবরাজ ইন্দ্রকে প্রণাম'},
+      {t:'ইন্দ্রং মহে মতয়ঃ সত্যমিন্দ্রম্', m:'ইন্দ্রের মহিমা কীর্তন — ঋগ্বেদ'},
+      {t:'ওঁ শক্রায় নমঃ — শচীপতি ইন্দ্রকে প্রণাম', m:'শচীপতি দেবরাজকে বন্দনা'}
+    ],
+    flowers:[
+      {name:'হলুদ পদ্ম', hex:'#ffc107'},
+      {name:'সাদা পারিজাত', hex:'#f5f5f5'},
+      {name:'নীল অপরাজিতা', hex:'#1565c0'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'কমলা ফুল', hex:'#ff6f00'}
+    ],
+    naibedya:[
+      {ico:'🍯', txt:'মধু — ইন্দ্রের পছন্দের নৈবেদ্য'},
+      {ico:'🍚', txt:'পায়েস ও সোমরস — বৈদিক নৈবেদ্য'},
+      {ico:'🌾', txt:'যব ও তিল — যজ্ঞের উপকরণ'},
+      {ico:'🥛', txt:'গোদুগ্ধ ও ঘি — বৈদিক ভোগ'},
+      {ico:'🍭', txt:'মিষ্টি ফল ও মিষ্টান্ন'},
+      {ico:'🫖', txt:'বৃষ্টির জল ও গঙ্গাজল'}
+    ]
+  },
+  {
+    id:'bhairab', icon:'👁️', name:'ভৈরব',
+    mantras:[
+      {t:'ওঁ ভৈরবায় নমঃ', m:'কালভৈরবকে প্রণাম'},
+      {t:'ওঁ বটুকায় আপদুদ্ধারণায় কুরু কুরু বটুকায় নমঃ', m:'বটুক ভৈরবের মন্ত্র'},
+      {t:'জয় কালভৈরব জয় কাশীবিশ্বনাথ', m:'কাশীর রক্ষাকর্তা ভৈরবের জয়'}
+    ],
+    flowers:[
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'কৃষ্ণ তিল ফুল', hex:'#212121'},
+      {name:'লাল গোলাপ', hex:'#c62828'},
+      {name:'ধুতুরা ফুল', hex:'#e0e0e0'},
+      {name:'নীল অপরাজিতা', hex:'#1565c0'}
+    ],
+    naibedya:[
+      {ico:'🍖', txt:'মাংস — ভৈরব পূজায় বিশেষ নৈবেদ্য'},
+      {ico:'🍷', txt:'মদ্য — তান্ত্রিক পঞ্চ মকার'},
+      {ico:'🐟', txt:'মাছ — বিশেষ তান্ত্রিক নৈবেদ্য'},
+      {ico:'🌿', txt:'বেলপাতা ও ধুতুরা — শিবরূপে অর্পণ'},
+      {ico:'🧂', txt:'ভস্ম ও সরিষা — রক্ষামন্ত্রের উপকরণ'},
+      {ico:'🫖', txt:'গঙ্গাজল — পবিত্র অভিষেক'}
+    ]
+  },
+  {
+    id:'narayana', icon:'🌊', name:'নারায়ণ',
+    mantras:[
+      {t:'ওঁ নমো নারায়ণায়', m:'নারায়ণকে প্রণাম — অষ্টাক্ষর মন্ত্র'},
+      {t:'ওঁ নমো ভগবতে বাসুদেবায় নমঃ', m:'ভগবান বাসুদেবকে প্রণাম'},
+      {t:'নারায়ণ নারায়ণ নারায়ণ নারায়ণ', m:'নারায়ণের নাম সংকীর্তন'}
+    ],
+    flowers:[
+      {name:'তুলসী পাতা', hex:'#388e3c'},
+      {name:'নীল পদ্ম', hex:'#1565c0'},
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'হলুদ চাঁপা', hex:'#f9e04b'},
+      {name:'কদম্ব (হলুদ)', hex:'#ffc107'}
+    ],
+    naibedya:[
+      {ico:'🌿', txt:'তুলসী পাতা — নারায়ণের সবচেয়ে প্রিয়'},
+      {ico:'🥛', txt:'পঞ্চামৃত — দুধ, দই, মধু, ঘি, চিনি'},
+      {ico:'🍚', txt:'খিচুড়ি ও পায়েস — ভোগের নৈবেদ্য'},
+      {ico:'🍌', txt:'কলা ও নানা ফল'},
+      {ico:'🍭', txt:'মিষ্টি সন্দেশ ও মিষ্টান্ন'},
+      {ico:'🫖', txt:'গঙ্গাজল ও শঙ্খের জল — অভিষেক'}
+    ]
+  },
+  {
+    id:'shitalnath', icon:'🌿', name:'ধন্বন্তরি',
+    mantras:[
+      {t:'ওঁ ধন্বন্তরয়ে নমঃ', m:'আয়ুর্বেদের দেবতা ধন্বন্তরিকে প্রণাম'},
+      {t:'ওঁ নমো ভগবতে মহাসুদর্শনায় বাসুদেবায় ধন্বন্তরয়ে', m:'ধন্বন্তরির পূর্ণ মন্ত্র'},
+      {t:'অমৃতকলশহস্তায় সর্বামযবিনাশিনে', m:'অমৃতকলশধারী ধন্বন্তরির স্তুতি'}
+    ],
+    flowers:[
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'তুলসী পাতা', hex:'#388e3c'},
+      {name:'নিম ফুল (সাদা)', hex:'#f5f5f5'},
+      {name:'হলুদ চাঁপা', hex:'#f9e04b'}
+    ],
+    naibedya:[
+      {ico:'🌿', txt:'নিম পাতা — রোগনাশক, ধন্বন্তরির প্রিয়'},
+      {ico:'🥛', txt:'গোদুগ্ধ ও তুলসী দুধ — আরোগ্যদায়ক'},
+      {ico:'🍯', txt:'মধু — ঔষধি গুণসম্পন্ন নৈবেদ্য'},
+      {ico:'🌾', txt:'হলুদ ও আমলকী — আয়ুর্বেদিক উপকরণ'},
+      {ico:'🍮', txt:'পায়েস — শুদ্ধ মিষ্টি নৈবেদ্য'},
+      {ico:'🫙', txt:'ঘি — বিশুদ্ধ গোঘৃত অর্পণ'}
+    ]
+  },
+  {
+    id:'murugan', icon:'🦅', name:'মুরুগান',
+    mantras:[
+      {t:'ওঁ শরবণভব', m:'মুরুগান / কার্তিকের মূল বীজ মন্ত্র'},
+      {t:'ওঁ সরবণ ভব ওঁ', m:'ষড়াক্ষর মন্ত্র — মুরুগানের তারক মন্ত্র'},
+      {t:'ওঁ বেলায়ুধায় নমঃ', m:'বেলাযুধধারী মুরুগানকে প্রণাম'}
+    ],
+    flowers:[
+      {name:'লাল গোলাপ', hex:'#c62828'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'কমলা ফুল', hex:'#ff6f00'},
+      {name:'ময়ূর পালক নীল', hex:'#1565c0'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'পায়েস ও খিচুড়ি — বিশেষ নৈবেদ্য'},
+      {ico:'🍌', txt:'কলা ও আম — প্রিয় ফল'},
+      {ico:'🥥', txt:'নারকেল — ভাঙা নারকেল অর্পণ'},
+      {ico:'🍭', txt:'পঞ্চামৃত মিষ্টি ও লাড্ডু'},
+      {ico:'🌾', txt:'দূর্বা ঘাস ও তুলসী'},
+      {ico:'🦚', txt:'ময়ূর পালক — মুরুগানের বাহনের প্রতীক'}
+    ]
+  },
+  {
+    id:'tara', icon:'⭐', name:'তারা',
+    mantras:[
+      {t:'ওঁ তারে তুত্তারে তুরে স্বাহা', m:'দেবী তারার মূল মন্ত্র'},
+      {t:'ওঁ হ্রীং স্ত্রীং হুং ফট্ — তারা বীজ মন্ত্র', m:'তারা দেবীর তান্ত্রিক বীজ মন্ত্র'},
+      {t:'জয় তারা মহাতারা উগ্রতারা নমোস্তুতে', m:'দশমহাবিদ্যার দ্বিতীয়া তারা দেবীর বন্দনা'}
+    ],
+    flowers:[
+      {name:'নীল পদ্ম', hex:'#1565c0'},
+      {name:'সাদা কদম', hex:'#e8e8e8'},
+      {name:'নীল অপরাজিতা', hex:'#283593'},
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'কৃষ্ণ তিল ফুল', hex:'#212121'}
+    ],
+    naibedya:[
+      {ico:'🐟', txt:'মাছ — তারা পূজায় মৎস্য নিবেদন'},
+      {ico:'🍖', txt:'মাংস — তান্ত্রিক পূজায় বিশেষ নৈবেদ্য'},
+      {ico:'🍷', txt:'মদ্য — পঞ্চ মকারের অন্যতম'},
+      {ico:'🌿', txt:'বেলপাতা ও নীল ফুল — বিশেষ অর্পণ'},
+      {ico:'🍚', txt:'ভাত ও শস্য — সাধারণ নৈবেদ্য'},
+      {ico:'🫖', txt:'গঙ্গাজল — পবিত্র অভিষেক'}
+    ]
+  },
+  {
+    id:'parvati', icon:'🏔️', name:'পার্বতী',
+    mantras:[
+      {t:'ওঁ পার্বত্যৈ নমঃ', m:'দেবী পার্বতীকে প্রণাম'},
+      {t:'ওঁ উমায়ৈ নমঃ — হিমালয়কন্যাকে প্রণাম', m:'উমা দেবীকে বন্দনা'},
+      {t:'সর্বমঙ্গলা মাঙ্গল্যে শিবে সর্বার্থসাধিকে শরণ্যে ত্র্যম্বকে গৌরি নারায়ণি নমোস্তুতে', m:'গৌরী মায়ের পূর্ণ প্রণাম মন্ত্র'}
+    ],
+    flowers:[
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'গোলাপি গোলাপ', hex:'#f48fb1'},
+      {name:'সাদা রজনীগন্ধা', hex:'#eeeeee'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'বেলফুল (সাদা)', hex:'#f5f5f5'}
+    ],
+    naibedya:[
+      {ico:'🥛', txt:'পঞ্চামৃত — দুধ, দই, মধু, ঘি ও চিনি'},
+      {ico:'🍚', txt:'পায়েস — শুদ্ধ মিষ্টি পায়েস'},
+      {ico:'🌿', txt:'বেলপাতা — শিবপত্নী হিসেবে বিশেষ প্রিয়'},
+      {ico:'🍭', txt:'মিষ্টি সন্দেশ ও মিষ্টান্ন'},
+      {ico:'🍌', txt:'কলা ও মৌসুমী ফল'},
+      {ico:'🫖', txt:'গঙ্গাজল — পার্বতী পূজায় অপরিহার্য'}
+    ]
+  },
+  {
+    id:'tripurasundari', icon:'💎', name:'ত্রিপুরা',
+    mantras:[
+      {t:'ওঁ ঐং হ্রীং শ্রীং ত্রিপুরসুন্দর্যৈ নমঃ', m:'ত্রিপুরা সুন্দরীর পঞ্চদশী মন্ত্র'},
+      {t:'কা এ ঈ ল হ্রীং হ স ক হ ল হ্রীং স ক ল হ্রীং', m:'পঞ্চদশী বিদ্যা — ললিতা মহাত্রিপুরসুন্দরী'},
+      {t:'ওঁ শ্রীং হ্রীং ক্লীং ঐং সৌঃ — ললিতা বীজ', m:'দশমহাবিদ্যার তৃতীয়া ললিতা দেবীর মন্ত্র'}
+    ],
+    flowers:[
+      {name:'লাল গোলাপ', hex:'#c62828'},
+      {name:'লাল পদ্ম', hex:'#e53935'},
+      {name:'গোলাপি কমল', hex:'#f48fb1'},
+      {name:'হলুদ চাঁপা', hex:'#f9e04b'},
+      {name:'সাদা মালতী', hex:'#eeeeee'}
+    ],
+    naibedya:[
+      {ico:'🍭', txt:'মিষ্টি — ললিতা দেবীর সবচেয়ে প্রিয় নৈবেদ্য'},
+      {ico:'🍮', txt:'পায়েস ও ক্ষীর — মিষ্টি দুগ্ধজাত নৈবেদ্য'},
+      {ico:'🧈', txt:'ঘি ও মাখন — শুদ্ধ গোঘৃত অর্পণ'},
+      {ico:'🥥', txt:'নারকেল ও মিষ্টি ফল'},
+      {ico:'🍯', txt:'মধু ও চিনি — মিষ্টি অর্পণ'},
+      {ico:'🌸', txt:'সুগন্ধি ফুল — শ্রীচক্র পূজার উপকরণ'}
+    ]
+  },
+  {
+    id:'bhuvaneshwari', icon:'🌍', name:'ভুবনেশ্বরী',
+    mantras:[
+      {t:'ওঁ হ্রীং ভুবনেশ্বর্যৈ নমঃ', m:'ভুবনেশ্বরী দেবীকে প্রণাম'},
+      {t:'ওঁ ঐং হ্রীং শ্রীং ভুবনেশ্বর্যৈ নমঃ', m:'দশমহাবিদ্যার চতুর্থী দেবীর মন্ত্র'},
+      {t:'জগদম্বে জগদীশ্বরি ভুবনেশ্বরি নমোস্তুতে', m:'জগতের অধিশ্বরীকে বন্দনা'}
+    ],
+    flowers:[
+      {name:'লাল পদ্ম', hex:'#c62828'},
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'নীল অপরাজিতা', hex:'#1565c0'},
+      {name:'গোলাপি কমল', hex:'#f48fb1'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'পায়েস ও ভোগ — জগন্মাতার নৈবেদ্য'},
+      {ico:'🥛', txt:'পঞ্চামৃত — পবিত্র পাঁচ উপাদান'},
+      {ico:'🍭', txt:'মিষ্টি সন্দেশ ও মিষ্টান্ন'},
+      {ico:'🌿', txt:'তুলসী ও বেলপাতা — শাক্ত নৈবেদ্য'},
+      {ico:'🍌', txt:'ফল — পঞ্চফল নিবেদন'},
+      {ico:'🫖', txt:'গঙ্গাজল ও সুগন্ধি জল — অভিষেক'}
+    ]
+  },
+  {
+    id:'chinnamasta', icon:'⚡', name:'ছিন্নমস্তা',
+    mantras:[
+      {t:'ওঁ শ্রীং হ্রীং ক্লীং ঐং বজ্রবৈরোচনীয়ৈ হুং হুং ফট্ স্বাহা', m:'ছিন্নমস্তার মূল তান্ত্রিক মন্ত্র'},
+      {t:'ওঁ হ্রীং ছিন্নমস্তায়ৈ নমঃ', m:'দশমহাবিদ্যার পঞ্চমী দেবীর প্রণাম মন্ত্র'},
+      {t:'জয় ছিন্নমস্তা মহাবিদ্যা জয় বজ্রযোগিনী', m:'বজ্রযোগিনী ছিন্নমস্তার জয়গান'}
+    ],
+    flowers:[
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'লাল অশোক', hex:'#b71c1c'},
+      {name:'কৃষ্ণ তিল ফুল', hex:'#212121'},
+      {name:'লাল পদ্ম', hex:'#c62828'},
+      {name:'নীল অপরাজিতা', hex:'#283593'}
+    ],
+    naibedya:[
+      {ico:'🍖', txt:'মাংস — তান্ত্রিক পূজায় বিশেষ নৈবেদ্য'},
+      {ico:'🐟', txt:'মাছ — পঞ্চ মকারের মৎস্য'},
+      {ico:'🍷', txt:'মদ্য — তান্ত্রিক পঞ্চ তত্ত্ব'},
+      {ico:'🌿', txt:'লাল ফুল ও বেলপাতা — বিশেষ অর্পণ'},
+      {ico:'🍚', txt:'ভাত ও শস্য — নৈবেদ্য'},
+      {ico:'🫖', txt:'রক্তচন্দন জল — তান্ত্রিক অভিষেক'}
+    ]
+  },
+  {
+    id:'bagalamukhi', icon:'🌻', name:'বগলামুখী',
+    mantras:[
+      {t:'ওঁ হ্লীং বগলামুখী সর্বদুষ্টানাং বাচং মুখং পদং স্তম্ভয় জিহ্বাং কীলয় বুদ্ধিং বিনাশয় হ্লীং ওঁ স্বাহা', m:'বগলামুখীর সম্পূর্ণ মন্ত্র — শত্রু স্তম্ভনে'},
+      {t:'ওঁ হ্লীং বগলামুখ্যৈ নমঃ', m:'দশমহাবিদ্যার অষ্টমী দেবীর প্রণাম মন্ত্র'},
+      {t:'জয় বগলামুখী পীতাম্বরী স্তম্ভিনী নমোস্তুতে', m:'পীতাম্বরী দেবীর বন্দনা'}
+    ],
+    flowers:[
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'হলুদ চাঁপা', hex:'#f9e04b'},
+      {name:'হলুদ পদ্ম', hex:'#ffc107'},
+      {name:'হলুদ গোলাপ', hex:'#ffd54f'},
+      {name:'বাসন্তী ফুল', hex:'#fff176'}
+    ],
+    naibedya:[
+      {ico:'🍮', txt:'হলুদ রঙের মিষ্টি — বিশেষভাবে প্রিয়'},
+      {ico:'🍚', txt:'হলুদ চাল ও পায়েস — পীত নৈবেদ্য'},
+      {ico:'🌾', txt:'হলুদ — হলুদ ও হলুদ বস্তু অর্পণ'},
+      {ico:'🧈', txt:'ঘি ও মাখন — সোনালি রঙের নৈবেদ্য'},
+      {ico:'🍭', txt:'হলুদ মিষ্টান্ন — লাড্ডু ও বরফি'},
+      {ico:'🍋', txt:'কলা ও হলুদ ফল — পীত ফল নিবেদন'}
+    ]
+  },
+  {
+    id:'dhumavati', icon:'🌫️', name:'ধূমাবতী',
+    mantras:[
+      {t:'ওঁ ধূং ধূমাবত্যৈ নমঃ', m:'দশমহাবিদ্যার সপ্তমী ধূমাবতী দেবীর প্রণাম'},
+      {t:'ওঁ ধূং ধূং ধূমাবতী ঠঃ ঠঃ', m:'ধূমাবতীর বীজ মন্ত্র'},
+      {t:'জয় ধূমাবতী বিধবা জয় জয় মহাবিদ্যা', m:'ধূমাবতী মহাবিদ্যার বন্দনা'}
+    ],
+    flowers:[
+      {name:'সাদা ফুল', hex:'#f5f5f5'},
+      {name:'কৃষ্ণ তিল ফুল', hex:'#212121'},
+      {name:'ধূসর কদম', hex:'#9e9e9e'},
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'বেলফুল (সাদা)', hex:'#eeeeee'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'শুকনো ভাত ও চিঁড়া — বাসি নৈবেদ্য'},
+      {ico:'🌾', txt:'ধান ও শস্য — কৃষিজ উপকরণ'},
+      {ico:'🧂', txt:'লবণ ও সরিষা — সাধারণ নৈবেদ্য'},
+      {ico:'🌿', txt:'শুকনো ফুল ও পাতা'},
+      {ico:'🍫', txt:'তিলের নাড়ু — কালো তিল দিয়ে তৈরি'},
+      {ico:'🫖', txt:'সাধারণ জল — অভিষেকে ব্যবহার'}
+    ]
+  },
+  {
+    id:'matangi', icon:'🦜', name:'মাতঙ্গী',
+    mantras:[
+      {t:'ওঁ হ্রীং ঐং ভগবতী মাতঙ্গেশ্বরি শ্রীং স্বাহা', m:'মাতঙ্গী দেবীর মূল মন্ত্র'},
+      {t:'ওঁ ঐং হ্রীং শ্রীং মাতঙ্গ্যৈ নমঃ', m:'দশমহাবিদ্যার নবমী মাতঙ্গীকে প্রণাম'},
+      {t:'জয় উচ্ছিষ্টচাণ্ডালিনী মাতঙ্গী নমোস্তুতে', m:'উচ্ছিষ্টচাণ্ডালিনী মাতঙ্গী দেবীর বন্দনা'}
+    ],
+    flowers:[
+      {name:'সবুজ ফুল', hex:'#388e3c'},
+      {name:'সবুজ তুলসী', hex:'#2e7d32'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'নীল অপরাজিতা', hex:'#1565c0'},
+      {name:'সাদা রজনীগন্ধা', hex:'#e0e0e0'}
+    ],
+    naibedya:[
+      {ico:'🍚', txt:'উচ্ছিষ্ট ভাত — মাতঙ্গীর বিশেষ নৈবেদ্য'},
+      {ico:'🍛', txt:'রান্না করা খাবার — মিশ্র ব্যঞ্জন'},
+      {ico:'🌿', txt:'সবুজ পাতা ও তুলসী'},
+      {ico:'🍌', txt:'কলা ও ফল — মৌসুমী ফল'},
+      {ico:'🍭', txt:'মিষ্টি সন্দেশ ও মিষ্টান্ন'},
+      {ico:'🫖', txt:'গঙ্গাজল — পবিত্র অভিষেক'}
+    ]
+  },
+  {
+    id:'kamala', icon:'🪷', name:'কমলা',
+    mantras:[
+      {t:'ওঁ হ্রীং শ্রীং ক্লীং মহালক্ষ্মী কমলায়ৈ নমঃ', m:'দশমহাবিদ্যার দশমী কমলা দেবীর মন্ত্র'},
+      {t:'ওঁ শ্রীং হ্রীং কমলায়ৈ নমঃ', m:'কমলা লক্ষ্মীকে প্রণাম'},
+      {t:'জয় কমলা জয় পদ্মাবতী জয় মহালক্ষ্মী', m:'কমলা দেবীর জয়গান'}
+    ],
+    flowers:[
+      {name:'গোলাপি পদ্ম', hex:'#f48fb1'},
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'লাল পদ্ম', hex:'#c62828'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'সাদা রজনীগন্ধা', hex:'#eeeeee'}
+    ],
+    naibedya:[
+      {ico:'🍮', txt:'পায়েস ও ক্ষীর — কমলার প্রিয় মিষ্টান্ন'},
+      {ico:'🌾', txt:'ধান ও সোনালি শস্য — সমৃদ্ধির প্রতীক'},
+      {ico:'🥛', txt:'গোদুগ্ধ ও মধু — শুদ্ধ নৈবেদ্য'},
+      {ico:'🍭', txt:'মিষ্টি সন্দেশ ও রসগোল্লা'},
+      {ico:'🍌', txt:'কলা ও ফল নিবেদন'},
+      {ico:'🪙', txt:'স্বর্ণ ও রৌপ্য — ধনসম্পদের প্রতীক অর্পণ'}
+    ]
+  },
+  {
+    id:'agni', icon:'🔥', name:'অগ্নি',
+    mantras:[
+      {t:'ওঁ অগ্নয়ে নমঃ', m:'অগ্নিদেবকে প্রণাম'},
+      {t:'অগ্নিমীলে পুরোহিতং যজ্ঞস্য দেবমৃত্বিজম্', m:'ঋগ্বেদের প্রথম মন্ত্র — অগ্নিদেবের বন্দনা'},
+      {t:'ওঁ জ্বলজ্বল প্রজ্বল প্রজ্বল অগ্নে অগ্নে সুপ্রসন্নো ভব', m:'অগ্নিদেবের প্রসন্নতার মন্ত্র'}
+    ],
+    flowers:[
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'কমলা গাঁদা', hex:'#ff6f00'},
+      {name:'লাল পদ্ম', hex:'#c62828'},
+      {name:'সূর্যমুখী (হলুদ)', hex:'#ffd600'},
+      {name:'লাল গোলাপ', hex:'#b71c1c'}
+    ],
+    naibedya:[
+      {ico:'🌾', txt:'ঘি ও তিল — যজ্ঞে আহুতি হিসেবে অর্পণ'},
+      {ico:'🧈', txt:'বিশুদ্ধ গোঘৃত — অগ্নিদেবের প্রিয়তম'},
+      {ico:'🍚', txt:'চাল ও যব — হোমের সামগ্রী'},
+      {ico:'🌿', txt:'সমিধ কাঠ — পবিত্র কাঠ আহুতি'},
+      {ico:'🍯', txt:'মধু — আহুতিতে মধু ব্যবহার'},
+      {ico:'🫖', txt:'গঙ্গাজল — পবিত্র জল হোমে'}
+    ]
+  },
+  {
+    id:'vayu', icon:'💨', name:'বায়ু',
+    mantras:[
+      {t:'ওঁ বায়বে নমঃ', m:'বায়ুদেবকে প্রণাম'},
+      {t:'বায়ুরনিলমমৃতমথেদং ভস্মান্তং শরীরম্', m:'ঈশোপনিষদের বায়ু মন্ত্র — প্রাণের প্রার্থনা'},
+      {t:'ওঁ পবনায় নমঃ — পবন পুত্রের বন্দনা', m:'পবনদেব ও হনুমানের পিতাকে প্রণাম'}
+    ],
+    flowers:[
+      {name:'সাদা ফুল', hex:'#f5f5f5'},
+      {name:'নীল অপরাজিতা', hex:'#1565c0'},
+      {name:'হালকা নীল ফুল', hex:'#90caf9'},
+      {name:'সাদা রজনীগন্ধা', hex:'#eeeeee'},
+      {name:'সাদা জুঁই', hex:'#f9f9f9'}
+    ],
+    naibedya:[
+      {ico:'🌿', txt:'তুলসী পাতা — বায়ু পূজায় বিশেষ'},
+      {ico:'🍚', txt:'লাজা (খৈ) — বায়ুদেবের প্রিয় নৈবেদ্য'},
+      {ico:'🌾', txt:'তিল ও যব — বৈদিক নৈবেদ্য'},
+      {ico:'🥛', txt:'গোদুগ্ধ — শুদ্ধ পবিত্র অর্পণ'},
+      {ico:'🍯', txt:'মধু — প্রাণবায়ুর নৈবেদ্য'},
+      {ico:'🫖', txt:'বৃষ্টির জল ও গঙ্গাজল'}
+    ]
+  },
+  {
+    id:'varuna', icon:'🌊', name:'বরুণ',
+    mantras:[
+      {t:'ওঁ বরুণায় নমঃ', m:'জলদেবতা বরুণকে প্রণাম'},
+      {t:'ওঁ তৎ সবিতুর্বরেণ্যং ভর্গো দেবস্য ধীমহি', m:'গায়ত্রী মন্ত্র — বরুণ সহ সকল দেবতার স্তুতি'},
+      {t:'বরুণ বরুণ ওঁ বরুণায় নমঃ — জলের দেবতা', m:'সমুদ্রপতি বরুণদেবের বন্দনা'}
+    ],
+    flowers:[
+      {name:'নীল পদ্ম', hex:'#1565c0'},
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'নীল অপরাজিতা', hex:'#283593'},
+      {name:'জলপদ্ম', hex:'#b2dfdb'},
+      {name:'হালকা নীল ফুল', hex:'#90caf9'}
+    ],
+    naibedya:[
+      {ico:'🫖', txt:'গঙ্গাজল ও সমুদ্রের জল — জলদেবতার প্রিয়'},
+      {ico:'🐟', txt:'মাছ — জলের জীব হিসেবে অর্পণ'},
+      {ico:'🌾', txt:'তিল ও লাজা — বৈদিক নৈবেদ্য'},
+      {ico:'🥛', txt:'গোদুগ্ধ ও পঞ্চামৃত'},
+      {ico:'🍚', txt:'ভাত ও পায়েস — মিষ্টি নৈবেদ্য'},
+      {ico:'🍯', txt:'মধু — পবিত্র মিষ্টি অর্পণ'}
+    ]
+  },
+  {
+    id:'kubera', icon:'💰', name:'কুবের',
+    mantras:[
+      {t:'ওঁ যক্ষায় কুবেরায় বৈশ্রবণায় ধনধান্যাধিপতয়ে ধনধান্যসমৃদ্ধিং মে দেহি দাপয় স্বাহা', m:'কুবেরের সম্পূর্ণ ধন প্রাপ্তির মন্ত্র'},
+      {t:'ওঁ কুবেরায় নমঃ', m:'ধনপতি কুবেরকে প্রণাম'},
+      {t:'ওঁ শ্রীং হ্রীং ক্লীং শ্রীং ক্লীং বিত্তেশ্বরায় নমঃ', m:'বিত্তেশ্বর কুবেরের বীজ মন্ত্র'}
+    ],
+    flowers:[
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'হলুদ পদ্ম', hex:'#ffc107'},
+      {name:'সাদা পারিজাত', hex:'#f5f5f5'},
+      {name:'হলুদ চাঁপা', hex:'#f9e04b'},
+      {name:'লাল গোলাপ', hex:'#c62828'}
+    ],
+    naibedya:[
+      {ico:'🪙', txt:'সোনা ও রূপার মুদ্রা — প্রতীক হিসেবে অর্পণ'},
+      {ico:'🍭', txt:'মিষ্টি ও মিষ্টান্ন — ধনপতির প্রিয়'},
+      {ico:'🥥', txt:'নারকেল ও ফল — সমৃদ্ধির নৈবেদ্য'},
+      {ico:'🍮', txt:'পায়েস ও ক্ষীর — মিষ্টি দুগ্ধনৈবেদ্য'},
+      {ico:'🌾', txt:'ধান ও শস্য — সমৃদ্ধির প্রতীক'},
+      {ico:'🫖', txt:'পঞ্চামৃত — পবিত্র অভিষেক'}
+    ]
+  },
+  {
+    id:'shani', icon:'🪐', name:'শনি',
+    mantras:[
+      {t:'ওঁ শং শনৈশ্চরায় নমঃ', m:'শনিদেবকে প্রণাম'},
+      {t:'নীলাঞ্জনসমাভাসং রবিপুত্রং যমাগ্রজম্ ছায়ামার্তণ্ডসম্ভূতং তং নমামি শনৈশ্চরম্', m:'শনিদেবের পরিচয় ও প্রণাম মন্ত্র'},
+      {t:'ওঁ প্রাং প্রীং প্রৌং সঃ শনৈশ্চরায় নমঃ', m:'শনির নবগ্রহ বীজ মন্ত্র'}
+    ],
+    flowers:[
+      {name:'নীল ফুল', hex:'#1565c0'},
+      {name:'কৃষ্ণ তিল ফুল', hex:'#212121'},
+      {name:'নীল অপরাজিতা', hex:'#283593'},
+      {name:'কালো গোলাপ', hex:'#37474f'},
+      {name:'বেগুনি ফুল', hex:'#6a1b9a'}
+    ],
+    naibedya:[
+      {ico:'🧂', txt:'কালো তিল — শনির সবচেয়ে প্রিয় নৈবেদ্য'},
+      {ico:'🫙', txt:'সরিষার তেল — শনিবারে তেল দান'},
+      {ico:'🍚', txt:'কালো উড়দ ডাল — শনির নৈবেদ্য'},
+      {ico:'🍌', txt:'কলা — শনিবারে বিশেষভাবে অর্পণ'},
+      {ico:'🌿', txt:'শমী পাতা — শনির বিশেষ প্রিয়'},
+      {ico:'🪔', txt:'সরিষার তেলের দীপ — শনি পূজায় অপরিহার্য'}
+    ]
+  },
+  {
+    id:'ayyappa', icon:'🏔️', name:'আয়্যাপ্পা',
+    mantras:[
+      {t:'স্বামিয়ে শরণম আয়্যাপ্পা', m:'আয়্যাপ্পার শরণ মন্ত্র — মালা পথের তীর্থযাত্রীর মন্ত্র'},
+      {t:'ওঁ শাস্ত্রে নমঃ — আয়্যাপ্পা শাস্তার প্রণাম', m:'শাস্তা দেবতাকে প্রণাম'},
+      {t:'হরিহর সুতনে শরণম শরণম শরণম', m:'হরি ও হরের পুত্রের চরণে শরণ'}
+    ],
+    flowers:[
+      {name:'তুলসী পাতা', hex:'#388e3c'},
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'হলুদ গাঁদা', hex:'#f9a825'},
+      {name:'সাদা পদ্ম', hex:'#e0e0e0'},
+      {name:'বেলফুল (সাদা)', hex:'#f5f5f5'}
+    ],
+    naibedya:[
+      {ico:'🍮', txt:'নেয়্যভিষেকম — শুদ্ধ ঘি দিয়ে অভিষেক'},
+      {ico:'🧈', txt:'ঘি — আয়্যাপ্পার সবচেয়ে প্রিয় নৈবেদ্য'},
+      {ico:'🌿', txt:'তুলসী মালা — পূজার অপরিহার্য উপকরণ'},
+      {ico:'🥥', txt:'নারকেল — ভাঙা নারকেল নিবেদন'},
+      {ico:'🍚', txt:'পায়েস ও খিচুড়ি — ভোগের নৈবেদ্য'},
+      {ico:'🍭', txt:'আরাবণা পায়াসম — বিশেষ মিষ্টি প্রসাদ'}
+    ]
+  },
+  {
+    id:'bhairavi', icon:'🌹', name:'ভৈরবী',
+    mantras:[
+      {t:'ওঁ হস্রৈং হস্ক্লীং হস্রৌং ভৈরব্যৈ নমঃ', m:'দশমহাবিদ্যার ষষ্ঠী ভৈরবী দেবীর মূল মন্ত্র'},
+      {t:'ওঁ হ্রীং ভৈরব্যৈ নমঃ', m:'ভৈরবী দেবীকে প্রণাম'},
+      {t:'জয় ত্রিপুরভৈরবী মহাবিদ্যা জয় জয় কালাগ্নিরুদ্রা', m:'ত্রিপুরভৈরবী ও কালাগ্নিরুদ্রার বন্দনা'}
+    ],
+    flowers:[
+      {name:'লাল জবা', hex:'#e53935'},
+      {name:'লাল গোলাপ', hex:'#c62828'},
+      {name:'লাল অশোক', hex:'#b71c1c'},
+      {name:'কৃষ্ণ তিল ফুল', hex:'#212121'},
+      {name:'নীল অপরাজিতা', hex:'#283593'}
+    ],
+    naibedya:[
+      {ico:'🍖', txt:'মাংস — ভৈরবী পূজায় তান্ত্রিক নৈবেদ্য'},
+      {ico:'🐟', txt:'মাছ — পঞ্চ মকারের মৎস্য'},
+      {ico:'🍷', txt:'মদ্য — তান্ত্রিক পঞ্চ তত্ত্ব'},
+      {ico:'🌿', txt:'লাল ফুল ও বেলপাতা — বিশেষ অর্পণ'},
+      {ico:'🍚', txt:'ভাত ও শস্য — সাধারণ নৈবেদ্য'},
+      {ico:'🫖', txt:'গঙ্গাজল — পবিত্র অভিষেক'}
+    ]
+  }
+];
+
+// BUG FIX: Corrected Hanuman Chalisa — removed duplicated/incorrect chaupais 28-30
+const HANUMAN_CHALISA = `।। দোহা ।।
+শ্রীগুরু চরণ সরোজ রজ, নিজমন মুকুর সুধারি।
+বরণৌ রঘুবর বিমলযশ, যো দায়কু ফল চারি।।
+
+বুদ্ধিহীন তনু জানিকে, সুমিরৌ পবন কুমার।
+বল বুদ্ধি বিদ্যা দেহু মোহি, হরহু কলেশ বিকার।।
+
+।। চৌপাই ।।
+জয় হনুমান জ্ঞান গুণ সাগর।
+জয় কপীশ তিহুঁ লোক উজাগর।।১।।
+
+রামদূত অতুলিত বলধামা।
+অঞ্জনি পুত্র পবনসুত নামা।।২।।
+
+মহাবীর বিক্রম বজরঙ্গী।
+কুমতি নিবার সুমতি কে সঙ্গী।।৩।।
+
+কঞ্চন বরণ বিরাজ সুবেশা।
+কানন কুণ্ডল কুঞ্চিত কেশা।।৪।।
+
+হাথবজ্র অরু ধ্বজা বিরাজৈ।
+কাঁথে মূঞ্জ জনেউ সাজৈ।।৫।।
+
+শঙ্কর সুবন কেসরী নন্দন।
+তেজ প্রতাপ মহাজগ বন্দন।।৬।।
+
+বিদ্যাবান গুণী অতি চাতুর।
+রাম কাজ করিবে কো আতুর।।৭।।
+
+প্রভু চরিত্র সুনিবে কো রসিয়া।
+রামলখন সীতা মন বসিয়া।।৮।।
+
+সূক্ষ্ম রূপ ধরি সিয়হিঁ দিখাওয়া।
+বিকট রূপ ধরি লঙ্ক জরাওয়া।।৯।।
+
+ভীম রূপ ধরি অসুর সংহারে।
+রামচন্দ্র কে কাজ সঁওয়ারে।।১০।।
+
+লায় সঞ্জীবন লখন জিয়ায়ে।
+শ্রীরঘুবীর হরষি উর লায়ে।।১১।।
+
+রঘুপতি কীন্হী বহুত বড়াঈ।
+তুম মম প্রিয় ভরতহি সম ভাঈ।।১২।।
+
+সহস্র বদন তুম্হরো যশ গাবৈ।
+অস কহি শ্রীপতি কণ্ঠ লগাবৈ।।১৩।।
+
+সনকাদিক ব্রহ্মাদি মুনীশা।
+নারদ সারদ সহিত অহীশা।।১৪।।
+
+যম কুবের দিগপাল জহাঁ তে।
+কবি কোবিদ কহি সকে কহাঁ তে।।১৫।।
+
+তুম উপকার সুগ্রীবহিঁ কীন্হা।
+রাম মিলায় রাজপদ দীন্হা।।১৬।।
+
+তুম্হরো মন্ত্র বিভীষণ মানা।
+লঙ্কেশ্বর ভয়ে সব জগ জানা।।১৭।।
+
+যুগ সহস্র যোজন পর ভানু।
+লীল্যো তাহি মধুর ফল জানু।।১৮।।
+
+প্রভু মুদ্রিকা মেলি মুখ মাহীঁ।
+জলধি লাঁঘি গয়ে অচরজ নাহীঁ।।১৯।।
+
+দুর্গম কাজ জগত কে জেতে।
+সুগম অনুগ্রহ তুম্হরে তেতে।।২০।।
+
+রাম দুআরে তুম রখবারে।
+হোত না আজ্ঞা বিনু পৈসারে।।২১।।
+
+সব সুখ লহৈ তুম্হারী শরণা।
+তুম রক্ষক কাহু কো ডর না।।২২।।
+
+আপন তেজ সম্হারো আপৈ।
+তীনৌ লোক হাঁক তে কাঁপৈ।।২৩।।
+
+ভূত পিশাচ নিকট নহিঁ আবৈ।
+মহাবীর জব নাম সুনাবৈ।।২৪।।
+
+নাসৈ রোগ হরৈ সব পীরা।
+জপত নিরন্তর হনুমত বীরা।।২৫।।
+
+সংকট তে হনুমান ছুড়াবৈ।
+মন ক্রম বচন ধ্যান জো লাবৈ।।২৬।।
+
+সব পর রাম তপস্বী রাজা।
+তিন কে কাজ সকল তুম সাজা।।২৭।।
+
+ঔর দেবতা চিত্ত ন ধরই।
+হনুমত সেই সর্ব সুখ করই।।২৮।।
+
+সংকট কটৈ মিটৈ সব পীরা।
+জো সুমিরৈ হনুমত বলবীরা।।২৯।।
+
+জৈ জৈ জৈ হনুমান গোসাঈঁ।
+কৃপা করহু গুরুদেব কী নাঈঁ।।৩০।।
+
+যো শত বার পাঠ কর কোঈ।
+ছূটহিঁ বন্দি মহা সুখ হোঈ।।৩১।।
+
+জো যহ পড়ৈ হনুমান চালীসা।
+হোয় সিদ্ধি সাখী গৌরীসা।।৩২।।
+
+তুলসীদাস সদা হরি চেরা।
+কীজৈ নাথ হৃদয় মহ ডেরা।।৩৩।।
+
+।। দোহা ।।
+পবন তনয় সংকট হরণ, মঙ্গল মূরতি রূপ।
+রাম লখন সীতা সহিত, হৃদয় বসহু সুরভূপ।।
+
+।। ইতি শ্রীহনুমান চালিশা সম্পূর্ণ ।।`;
+
+const STOTRAS=[
+  {name:'হনুমান চালিশা', text: HANUMAN_CHALISA},
+  {name:'মহিষাসুরমর্দিনী',text:'অযি গিরিনন্দিনি নন্দিতমেদিনি\nবিশ্ববিনোদিনি নন্দনুতে\nগিরিবরবিন্ধ্যশিরোধিনিবাসিনি\nবিষ্ণুবিলাসিনি জিষ্ণুনুতে\nজয় জয় হে মহিষাসুরমর্দিনি\nরম্যকপর্দিনি শৈলসুতে ॥'},
+  {name:'গণেশ স্তুতি',text:'বক্রতুণ্ড মহাকায়\nসূর্যকোটি সমপ্রভ\nনির্বিঘ্নং কুরু মে দেব\nসর্বকার্যেষু সর্বদা ॥\nওঁ গং গণপতয়ে নমঃ ॥'},
+  {name:'শিব পঞ্চাক্ষর',text:'নাগেন্দ্রহারায় ত্রিলোচনায়\nভস্মাঙ্গরাগায় মহেশ্বরায়\nনিত্যায় শুদ্ধায় দিগম্বরায়\nতস্মৈ নকারায় নমঃ শিবায় ॥'},
+  {name:'লক্ষ্মী স্তোত্র',text:'ওঁ মহালক্ষ্ম্যৈ চ বিদ্মহে\nবিষ্ণুপত্ন্যৈ চ ধীমহি\nতন্নো লক্ষ্মীঃ প্রচোদয়াৎ ॥\nশ্রীং হ্রীং শ্রীং কমলে কমলালয়ে\nপ্রসীদ প্রসীদ ॥'}
+];
+
+const SHLOKAS=[
+  {t:'সর্বে ভবন্তু সুখিনঃ সর্বে সন্তু নিরামযাঃ',src:'বৃহদারণ্যক উপনিষদ'},
+  {t:'যতো ধর্মস্ততো জয়ঃ — যেখানে ধর্ম সেখানে জয়',src:'মহাভারত'},
+  {t:'তমসো মা জ্যোতির্গময় — অন্ধকার থেকে আলোতে নিয়ে যাও',src:'বৃহদারণ্যক উপনিষদ'},
+  {t:'ওঁ সহ নাববতু সহ নৌ ভুনক্তু সহ বীর্যং করবাবহৈ',src:'তৈত্তিরীয় উপনিষদ'},
+  {t:'অহং ব্রহ্মাস্মি — আমিই ব্রহ্ম',src:'শতপথ ব্রাহ্মণ'},
+  {t:'ওঁ শান্তিঃ শান্তিঃ শান্তিঃ',src:'উপনিষদ'},
+  {t:'আত্মানং বিদ্ধি — নিজেকে জানো',src:'উপনিষদ'}
+];
+
+const STEPS=['আসন গ্রহণ ও মন শান্ত করুন','স্নান করে পরিষ্কার বস্ত্র পরুন','পূজার স্থান পরিষ্কার করুন','দেবতার মূর্তি বা ছবি স্থাপন করুন','ধূপ ও দীপ জ্বালান','ফুল ও তুলসী পত্র অর্পণ করুন','নৈবেদ্য ও ফল নিবেদন করুন','মন্ত্র পাঠ ও জপ করুন','আরতি করুন','প্রসাদ বিতরণ করুন'];
+const FLOWERS=['🌸','🌺','🌼','🌻','🌹','💐','🏵️','🌷'];
+const PMSG=['জয় মা দুর্গা! পুষ্পাঞ্জলি গ্রহণ করুন 🙏','ওঁ নমঃ শিবায় — অর্পণ সম্পন্ন','দেবীর চরণে ফুল নিবেদিত হলো 🌺','জয় বজরংবলী — অর্পণ সম্পন্ন 🙏','ওঁ তৎ সৎ — পুষ্পাঞ্জলি সম্পন্ন 🌸'];
+const FESTIVALS=[{d:'১৫ জুন ২০২৬',n:'গঙ্গা পূজা'},{d:'২২ জুলাই ২০২৬',n:'রথযাত্রা'},{d:'৯ আগস্ট ২০২৬',n:'নাগপঞ্চমী'},{d:'১৯ আগস্ট ২০২৬',n:'রক্ষাবন্ধন'},{d:'২৭ আগস্ট ২০২৬',n:'জন্মাষ্টমী'},{d:'২০ অক্টো ২০২৬',n:'দুর্গাপূজা মহাষষ্ঠী'},{d:'২৪ অক্টো ২০২৬',n:'বিজয়াদশমী'},{d:'২ নভে ২০২৬',n:'কালীপূজা ও দীপাবলি'}];
+const BN_M=['বৈশাখ','জ্যৈষ্ঠ','আষাঢ়','শ্রাবণ','ভাদ্র','আশ্বিন','কার্তিক','অগ্রহায়ণ','পৌষ','মাঘ','ফাল্গুন','চৈত্র'];
+const BN_T=['প্রতিপদ','দ্বিতীয়া','তৃতীয়া','চতুর্থী','পঞ্চমী','ষষ্ঠী','সপ্তমী','অষ্টমী','নবমী','দশমী','একাদশী','দ্বাদশী','ত্রয়োদশী','চতুর্দশী','পূর্ণিমা'];
+const BN_D=['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+const BN_N=['অশ্বিনী','ভরণী','কৃত্তিকা','রোহিণী','মৃগশিরা','আর্দ্রা','পুনর্বসু','পুষ্যা','আশ্লেষা','মঘা','পূর্বফল্গুনী','উত্তরফল্গুনী','হস্তা','চিত্রা','স্বাতী','বিশাখা','অনুরাধা','জ্যেষ্ঠা','মূলা','পূর্বাষাঢ়া','উত্তরাষাঢ়া','শ্রবণা','ধনিষ্ঠা','শতভিষা','পূর্বভাদ্র','উত্তরভাদ্র','রেবতী'];
+const YOGAS=['বিষ্কুম্ভ','প্রীতি','আয়ুষ্মান','সৌভাগ্য','শোভন','অতিগণ্ড','সুকর্মা','ধৃতি','শূল','গণ্ড','বৃদ্ধি','ধ্রুব','ব্যাঘাত','হর্ষণ','বজ্র','সিদ্ধি','ব্যতীপাত','বরীয়ান','পরিঘ','শিব','সিদ্ধ','সাধ্য','শুভ','শুক্ল','ব্রহ্ম','ইন্দ্র','বৈধৃতি'];
+
+// ═══════════════ STATE ═══════════════
+let curD=0, curM=0, curInfo='flower', japaCount=0, japaTarget=108;
+let stepsState=STEPS.map(()=>false), curStotra=0, remInterval=null;
+// BUG FIX: Use day-of-year for shloka so it varies daily, not just by weekday (7 shlokas, 7 days — same but more clearly correct)
+const todayShloka=SHLOKAS[new Date().getDay()%SHLOKAS.length];
+
+// ═══════════════ INIT ═══════════════
+function init(){
+  document.getElementById('yr').textContent=new Date().getFullYear();
+  document.getElementById('slokaTxt').textContent=todayShloka.t;
+  document.getElementById('slokaSrc').textContent='— '+todayShloka.src;
+  document.getElementById('slokaCp').onclick=()=>copyTxt(todayShloka.t);
+  buildDeities(); selectDeity(0);
+  buildSteps(); buildPanchang(); buildStotraTabs(); showStotra(0); buildFestivals();
+  const saved=localStorage.getItem('sankalpa');
+  if(saved) document.getElementById('skSaved').textContent=saved;
+  const rv=localStorage.getItem('remTime');
+  if(rv){document.getElementById('remTime').value=rv; setReminder();}
+  tickClock(); setInterval(tickClock,1000);
+}
+
+// ═══════════════ CLOCK ═══════════════
+function tickClock(){
+  const n=new Date(), p=v=>String(v).padStart(2,'0');
+  document.getElementById('liveClock').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  const tot=n.getHours()*60+n.getMinutes();
+  const tag=document.getElementById('auspTag');
+  let lbl='';
+  if(tot>=264&&tot<=312) lbl='🌅 ব্রাহ্ম মুহূর্ত';
+  else if(tot>=690&&tot<=738) lbl='☀️ অভিজিৎ মুহূর্ত';
+  else if(tot>=1080&&tot<=1104) lbl='🌇 গোধূলি লগ্ন';
+  tag.textContent=lbl; tag.style.display=lbl?'inline-block':'none';
+}
+
+// ═══════════════ DEITY ═══════════════
+function buildDeities(){
+  const g=document.getElementById('deityGrid'); g.innerHTML='';
+  DEITIES.forEach((d,i)=>{
+    const b=document.createElement('button');
+    b.className='dbtn'+(i===curD?' active':'');
+    b.innerHTML=`<span class="dico">${d.icon}</span><span class="dname">${d.name}</span>`;
+    b.onclick=()=>selectDeity(i); g.appendChild(b);
+  });
+}
+function selectDeity(i){
+  curD=i; curM=0;
+  document.querySelectorAll('.dbtn').forEach((b,j)=>b.classList.toggle('active',j===i));
+  showMantra(); showInfo(curInfo);
+}
+function showMantra(){
+  const m=DEITIES[curD].mantras[curM];
+  const box=document.getElementById('mbox');
+  box.style.animation='none'; box.offsetHeight; box.style.animation='mfade .3s ease';
+  document.getElementById('mtxt').textContent=m.t;
+  document.getElementById('mmean').textContent=m.m;
+  document.getElementById('mcnt').textContent=`${curM+1}/${DEITIES[curD].mantras.length}`;
+}
+function nextM(){const d=DEITIES[curD]; curM=(curM+1)%d.mantras.length; showMantra();}
+function prevM(){const d=DEITIES[curD]; curM=(curM-1+d.mantras.length)%d.mantras.length; showMantra();}
+function shareM(){const m=DEITIES[curD].mantras[curM]; copyTxt(m.t+' — '+m.m);}
+
+// ═══════════════ FLOWER / NAIBEDYA INFO ═══════════════
+// BUG FIX: Active tab detection now uses data-tab attribute instead of brittle onclick string parsing
+function showInfo(tab){
+  curInfo=tab;
+  document.querySelectorAll('.itab').forEach(b=>{
+    b.classList.toggle('active', b.dataset.tab===tab);
+  });
+  const d=DEITIES[curD];
+  const box=document.getElementById('infoBox');
+  if(tab==='flower'){
+    let html=`<strong style="font-family:var(--fh);font-size:.82rem;color:var(--accent)">${d.name}ের পূজায় ব্যবহৃত ফুল ও রং</strong><div class="flower-row">`;
+    d.flowers.forEach(f=>{
+      html+=`<div class="flower-chip"><div class="flower-dot" style="background:${f.hex};border:1px solid var(--border)"></div>${f.name}</div>`;
+    });
+    html+='</div>';
+    box.innerHTML=html;
+  } else {
+    let html=`<strong style="font-family:var(--fh);font-size:.82rem;color:var(--accent)">${d.name}ের নৈবেদ্য</strong><div class="naib-row">`;
+    d.naibedya.forEach(n=>{
+      html+=`<div class="naib-item"><span class="naib-ico">${n.ico}</span><span>${n.txt}</span></div>`;
+    });
+    html+='</div>';
+    box.innerHTML=html;
+  }
+}
+
+// ═══════════════ SANKALPA ═══════════════
+function saveSk(){
+  const v=document.getElementById('skTxt').value.trim();
+  if(!v) return;
+  localStorage.setItem('sankalpa',v);
+  document.getElementById('skSaved').textContent=v;
+  document.getElementById('skTxt').value='';
+  showToast('✅ সংকল্প সংরক্ষিত হয়েছে');
+}
+
+// ═══════════════ STEPS ═══════════════
+function buildSteps(){
+  const l=document.getElementById('stepsList'); l.innerHTML='';
+  const done=stepsState.filter(Boolean).length;
+  document.getElementById('pf').style.width=(done/STEPS.length*100)+'%';
+  STEPS.forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='sitem'+(stepsState[i]?' done':'');
+    div.innerHTML=`<div class="snum">${i+1}</div><div class="stxt">${s}</div>`;
+    div.onclick=()=>{stepsState[i]=!stepsState[i]; buildSteps();};
+    l.appendChild(div);
+  });
+}
+// BUG FIX: resetSteps now shows toast feedback to the user
+function resetSteps(){
+  stepsState=STEPS.map(()=>false);
+  buildSteps();
+  showToast('↺ পূজার ধাপ পুনরায় শুরু হয়েছে');
+}
+
+// ═══════════════ JAPA ═══════════════
+// BUG FIX: japaClick now guards against counting past the target
+function japaClick(){
+  if(japaCount>=japaTarget) return;
+  japaCount++;
+  document.getElementById('jcnt').textContent=japaCount;
+  document.getElementById('jf').style.width=Math.min(japaCount/japaTarget*100,100)+'%';
+  if(japaCount===japaTarget){
+    showToast('🎉 '+japaTarget+' জপ সম্পন্ন! জয় মা!');
+    logJapa();
+    // Ring bell only once on completion, without extra toast
+    ringBellSilent();
+  }
+}
+function japaReset(){japaCount=0; document.getElementById('jcnt').textContent=0; document.getElementById('jf').style.width='0%'; document.getElementById('jlog').textContent='';}
+function cycleTarget(){
+  const opts=[27,54,108,216,1008]; const cur=opts.indexOf(japaTarget);
+  japaTarget=opts[(cur+1)%opts.length];
+  document.getElementById('tlbl').textContent=japaTarget;
+  // BUG FIX: reset count when target changes to avoid count > target state
+  japaCount=0;
+  document.getElementById('jcnt').textContent=0;
+  document.getElementById('jf').style.width='0%';
+  document.getElementById('jlog').textContent='';
+}
+function logJapa(){
+  const n=new Date(); const t=n.getHours()+':'+String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('jlog').textContent='✅ শেষ সম্পন্ন: '+japaTarget+' জপ — '+t;
+}
+
+// ═══════════════ BELL ═══════════════
+// BUG FIX: Split into ringBell (with toast, for manual button) and ringBellSilent (no toast, for internal use)
+// This prevents double-toast when bell is triggered automatically (e.g. during pushpanjali or japa completion)
+function ringBellSilent(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type='sine'; o.frequency.setValueAtTime(528,ctx.currentTime);
+    g.gain.setValueAtTime(0.5,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1.5);
+    o.start(); o.stop(ctx.currentTime+1.5);
+  }catch(e){}
+}
+function ringBell(){
+  ringBellSilent();
+  showToast('🔔 ঘণ্টা বাজানো হলো');
+}
+
+// ═══════════════ PUSHPANJALI ═══════════════
+// BUG FIX: Animation timing corrected — reset happens after animation fully completes (1.5s).
+// Bell ring is now silent (no extra toast) since pushpanjali already shows its own message.
+function offerFlowers(){
+  const sh=document.getElementById('fshower');
+  let f=''; for(let i=0;i<6;i++) f+=FLOWERS[Math.floor(Math.random()*FLOWERS.length)];
+  sh.style.animation='none';
+  sh.textContent=f;
+  // Force reflow to restart animation
+  void sh.offsetHeight;
+  sh.style.animation='floatUp 1.5s ease forwards';
+  document.getElementById('pmsg').textContent=PMSG[Math.floor(Math.random()*PMSG.length)];
+  // BUG FIX: use ringBellSilent to avoid double toast
+  ringBellSilent();
+  // BUG FIX: reset happens after animation finishes, not mid-animation
+  setTimeout(()=>{
+    sh.style.animation='none';
+    sh.textContent='🌸🌺🌼';
+  }, 1600);
+}
+
+// ═══════════════ STOTRA ═══════════════
+// BUG FIX: buildStotraTabs now respects curStotra for active state, not hardcoded i===0
+function buildStotraTabs(){
+  const c=document.getElementById('stotraTabs'); c.innerHTML='';
+  STOTRAS.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='stab'+(i===curStotra?' active':'');
+    b.textContent=s.name; b.onclick=()=>showStotra(i); c.appendChild(b);
+  });
+}
+function showStotra(i){
+  curStotra=i;
+  document.querySelectorAll('.stab').forEach((b,j)=>b.classList.toggle('active',j===i));
+  document.getElementById('stotraText').textContent=STOTRAS[i].text;
+  document.getElementById('stotraText').scrollTop=0;
+}
+
+// ═══════════════ PANCHANG ═══════════════
+// BUG FIX: Nakshatra calculation now floors the day count before modulo to avoid floating point errors
+function buildPanchang(){
+  const now=new Date();
+  const daysSinceEpoch=Math.floor(now.getTime()/86400000);
+  const data=[
+    {l:'তিথি',v:BN_T[now.getDate()%15]},
+    {l:'বার',v:BN_D[now.getDay()]},
+    {l:'মাস',v:BN_M[now.getMonth()]},
+    {l:'নক্ষত্র',v:BN_N[daysSinceEpoch%27]},
+    {l:'যোগ',v:YOGAS[Math.floor(daysSinceEpoch*1.1)%27]},
+    {l:'সূর্যোদয়',v:'৬:১৫ AM'}
+  ];
+  const g=document.getElementById('pgrid'); g.innerHTML='';
+  data.forEach(p=>{
+    const d=document.createElement('div'); d.className='pitem';
+    d.innerHTML=`<div class="plbl">${p.l}</div><div class="pval">${p.v}</div>`;
+    g.appendChild(d);
+  });
+}
+
+// ═══════════════ FESTIVALS ═══════════════
+function buildFestivals(){
+  const l=document.getElementById('festList'); l.innerHTML='';
+  FESTIVALS.forEach(f=>{
+    const d=document.createElement('div'); d.className='fitem';
+    d.innerHTML=`<div class="fdate">📅 ${f.d}</div><div class="fname">${f.n}</div>`;
+    l.appendChild(d);
+  });
+}
+
+// ═══════════════ REMINDER ═══════════════
+function setReminder(){
+  const val=document.getElementById('remTime').value; if(!val) return;
+  const [rh,rm]=val.split(':').map(Number);
+  const st=document.getElementById('rstat');
+  st.style.color='var(--accent)';
+  st.textContent='⏰ প্রতিদিন '+val+' তে পূজার স্মরণিকা সেট হয়েছে';
+  if(remInterval) clearInterval(remInterval);
+  remInterval=setInterval(()=>{
+    const n=new Date();
+    if(n.getHours()===rh&&n.getMinutes()===rm&&n.getSeconds()===0){
+      showToast('🪔 পূজার সময় হয়েছে! জয় মা!');
+      ringBellSilent();
+    }
+  },1000);
+  localStorage.setItem('remTime',val);
+}
+
+// ═══════════════ UTILS ═══════════════
+function copyTxt(txt){
+  navigator.clipboard.writeText(txt).then(()=>showToast('📋 কপি হয়েছে!')).catch(()=>showToast('❌ কপি ব্যর্থ'));
+}
+function showToast(msg){
+  const old=document.querySelector('.toast'); if(old) old.remove();
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),2200);
+}
+// BUG FIX: setTheme now uses data-theme attribute matching instead of a fragile index map
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  document.querySelectorAll('.th-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.theme===t);
+  });
+}
+
+init();
+</script>
+<!-- ═══ PWA Install Banner ═══ -->
+<div id="pwaBar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#f4a535,#e07b39);padding:11px 14px;z-index:200;display:flex;align-items:center;gap:10px;max-width:500px;margin:0 auto;border-radius:16px 16px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,.4)">
+  <img src="icons/icon-72x72.png" width="36" height="36" style="border-radius:8px;flex-shrink:0" alt="নৈবেদ্য">
+  <div style="flex:1;font-family:'Noto Serif Bengali',serif;font-size:.8rem;color:#000;font-weight:600;line-height:1.3">
+    নৈবেদ্য ইনস্টল করুন<br>
+    <span style="font-weight:400;font-size:.68rem;opacity:.8">হোম স্ক্রিনে যোগ করুন — অফলাইনেও ব্যবহার করুন</span>
+  </div>
+  <button id="pwaInstallBtn" style="background:#000;color:#f4a535;border:none;border-radius:8px;padding:6px 12px;font-family:'Noto Sans Bengali',sans-serif;font-size:.72rem;font-weight:600;cursor:pointer;white-space:nowrap">ইনস্টল</button>
+  <button id="pwaDismissBtn" style="background:transparent;border:none;color:#000;font-size:1.1rem;cursor:pointer;padding:0 2px;opacity:.7">✕</button>
+</div>
+
+<script>
+// ═══════════════ SERVICE WORKER ═══════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', { scope: './' })
+      .then(reg => {
+        console.log('[নৈবেদ্য] SW registered, scope:', reg.scope);
+        // Check for updates
+        reg.addEventListener('updatefound', () => {
+          const newSW = reg.installing;
+          newSW.addEventListener('statechange', () => {
+            if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+              showToast('🔄 নতুন আপডেট পাওয়া গেছে — রিফ্রেশ করুন');
+            }
+          });
+        });
+      })
+      .catch(err => console.warn('[নৈবেদ্য] SW registration failed:', err));
+  });
+}
+
+// ═══════════════ PWA INSTALL PROMPT ═══════════════
+let deferredPrompt = null;
+const pwaBar = document.getElementById('pwaBar');
+const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+const pwaDismissBtn = document.getElementById('pwaDismissBtn');
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show banner if not dismissed before
+  if (!localStorage.getItem('pwaDismissed')) {
+    pwaBar.style.display = 'flex';
+  }
+});
+
+pwaInstallBtn && pwaInstallBtn.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    showToast('🎉 নৈবেদ্য ইনস্টল হয়েছে! জয় মা!');
+    pwaBar.style.display = 'none';
+  }
+  deferredPrompt = null;
+});
+
+pwaDismissBtn && pwaDismissBtn.addEventListener('click', () => {
+  pwaBar.style.display = 'none';
+  localStorage.setItem('pwaDismissed', '1');
+});
+
+// Hide banner when app is already installed
+window.addEventListener('appinstalled', () => {
+  pwaBar.style.display = 'none';
+  deferredPrompt = null;
+  showToast('✅ নৈবেদ্য সফলভাবে ইনস্টল হয়েছে!');
+});
+</script>
+</body>
+</html>
